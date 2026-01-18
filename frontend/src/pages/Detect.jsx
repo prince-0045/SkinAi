@@ -3,6 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, X, AlertCircle, FileText, CheckCircle } from 'lucide-react';
 import ScanningLoader from '../components/animations/ScanningLoader';
+import { useAuth } from '../context/AuthContext';
 
 export default function Detect() {
     const [file, setFile] = useState(null);
@@ -33,21 +34,45 @@ export default function Detect() {
         setIsAnalyzing(false);
     };
 
-    const handleAnalyze = () => {
+    const { user } = useAuth(); // Get user for auth token if needed, or just token from localStorage
+
+    const handleAnalyze = async () => {
         if (!file) return;
         setIsAnalyzing(true);
+        setResult(null);
 
-        // Simulate API call
-        setTimeout(() => {
-            setIsAnalyzing(false);
-            setResult({
-                disease: "Eczema",
-                confidence: 94.2,
-                severity: "Moderate",
-                description: "A condition that makes your skin red and itchy. It's common in children but can occur at any age.",
-                recommendation: "Keep skin moisturized. Apply cool compresses. Avoid irritants."
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const token = localStorage.getItem('token');
+            const response = await fetch('/api/v1/scan/predict', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
             });
-        }, 3000);
+
+            if (response.ok) {
+                const data = await response.json();
+                setResult({
+                    disease: data.disease_detected,
+                    confidence: (data.confidence_score * 100).toFixed(1),
+                    severity: data.severity_level,
+                    description: "AI analysis complete based on the uploaded image.", // Backend doesn't return description yet
+                    recommendation: "Please consult a dermatologist for a professional diagnosis." // Backend doesn't return recommendation yet
+                });
+            } else {
+                console.error("Analysis failed");
+                alert("Analysis failed. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error analyzing image:", error);
+            alert("Error connecting to server.");
+        } finally {
+            setIsAnalyzing(false);
+        }
     };
 
     return (

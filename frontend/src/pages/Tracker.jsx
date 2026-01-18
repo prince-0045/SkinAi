@@ -1,115 +1,135 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import HealingChart from '../components/dashboard/HealingChart';
-import ImageComparison from '../components/dashboard/ImageComparison';
-import { Calendar, TrendingUp, AlertCircle, Clock } from 'lucide-react';
+import { Calendar, Activity, AlertCircle } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export default function Tracker() {
-    const dummyBefore = "https://images.unsplash.com/photo-1614859324967-dadb3e51d939?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"; // Red skin example
-    const dummyAfter = "https://images.unsplash.com/photo-1512413914633-b5043f4041ea?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"; // Clear skin example
+    const { user } = useAuth();
+    const [history, setHistory] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const timelineEvents = [
-        { date: 'Oct 24', title: 'Initial Scan', status: 'Detected', severity: 'High' },
-        { date: 'Oct 27', title: 'Follow-up', status: 'Improving', severity: 'Medium' },
-        { date: 'Nov 04', title: 'Routine Check', status: 'Clear', severity: 'Low' },
-    ];
+    useEffect(() => {
+        const fetchHistory = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/v1/scan/history', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setHistory(data);
+                } else {
+                    console.error("Failed to fetch history");
+                    setError("Failed to load history");
+                }
+            } catch (err) {
+                console.error("Error fetching history:", err);
+                setError("Failed to load history");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchHistory();
+    }, []);
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 pt-24 pb-12">
             <Helmet>
-                <title>Healing Tracker - SkinAi</title>
+                <title>My Scans - SkinAi</title>
             </Helmet>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Healing Dashboard</h1>
-                    <p className="text-gray-600">Track your recovery progress and monitor skin health statistics.</p>
+                    <h1 className="text-3xl font-bold text-gray-900">My Scans</h1>
+                    <p className="text-gray-600">History of your uploaded skin scans and analysis results.</p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Main Stats Column */}
-                    <div className="lg:col-span-2 space-y-8">
-                        {/* Healing Chart */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100"
-                        >
-                            <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-lg font-bold text-gray-900 flex items-center">
-                                    <TrendingUp className="w-5 h-5 mr-2 text-medical-600" />
-                                    Recovery Trajectory
-                                </h2>
-                                <span className="text-sm text-green-600 font-semibold bg-green-50 px-3 py-1 rounded-full">
-                                    +42% Improvement
-                                </span>
-                            </div>
-                            <HealingChart />
-                        </motion.div>
-
-                        {/* Before vs After */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.1 }}
-                            className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100"
-                        >
-                            <h2 className="text-lg font-bold text-gray-900 mb-4">Visual Progress</h2>
-                            <ImageComparison beforeImage={dummyBefore} afterImage={dummyAfter} />
-                            <p className="mt-4 text-sm text-gray-500 text-center">Drag the slider to compare initial scan vs current status.</p>
-                        </motion.div>
+                {loading ? (
+                    <div className="flex justify-center items-center h-64">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-medical-600"></div>
                     </div>
-
-                    {/* Sidebar / Timeline */}
-                    <div className="space-y-8">
-                        {/* Current Status Card */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className="bg-gradient-to-br from-medical-600 to-medical-800 rounded-2xl p-6 text-white shadow-lg"
-                        >
-                            <h3 className="text-lg font-semibold mb-2">Current Status</h3>
-                            <div className="text-4xl font-bold mb-4">Healing</div>
-                            <div className="space-y-2">
-                                <div className="flex justify-between text-sm text-medical-100">
-                                    <span>Inflammation</span>
-                                    <span>Low</span>
+                ) : error ? (
+                    <div className="bg-red-50 p-4 rounded-lg text-red-700 text-center">
+                        {error}
+                    </div>
+                ) : history.length === 0 ? (
+                    <div className="text-center py-12 bg-white rounded-2xl shadow-sm border border-gray-100">
+                        <Activity className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900">No scans yet</h3>
+                        <p className="text-gray-500 mt-2">Upload your first image to get started.</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {history.map((scan, index) => (
+                            <motion.div
+                                key={scan.id || index}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                                className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+                            >
+                                <div className="aspect-video relative overflow-hidden bg-gray-100 group">
+                                    <img
+                                        src={scan.image_url}
+                                        alt={`Scan ${index + 1}`}
+                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                    />
+                                    <div className="absolute top-2 right-2">
+                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold shadow-sm
+                                            ${scan.severity_level === 'Severe' ? 'bg-red-100 text-red-700' :
+                                                scan.severity_level === 'Moderate' ? 'bg-yellow-100 text-yellow-700' :
+                                                    'bg-green-100 text-green-700'}`}>
+                                            {scan.severity_level}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="w-full bg-white/20 rounded-full h-2">
-                                    <div className="bg-green-400 h-2 rounded-full" style={{ width: '20%' }}></div>
-                                </div>
-                            </div>
-                        </motion.div>
-
-                        {/* Timeline */}
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                            <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
-                                <Calendar className="w-5 h-5 mr-2 text-gray-400" />
-                                History
-                            </h3>
-                            <div className="space-y-8 pl-2">
-                                {timelineEvents.map((event, index) => (
-                                    <div key={index} className="relative pl-8 border-l-2 border-gray-200 last:border-0 pb-2">
-                                        <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-medical-500 ring-4 ring-white"></div>
+                                <div className="p-5">
+                                    <div className="flex justify-between items-start mb-3">
                                         <div>
-                                            <div className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">{event.date}</div>
-                                            <div className="font-semibold text-gray-900">{event.title}</div>
-                                            <div className="text-sm text-gray-600 mt-1 flex items-center">
-                                                Status:
-                                                <span className={`ml-2 px-2 py-0.5 rounded text-xs font-semibold 
-                                            ${event.status === 'Detected' ? 'bg-red-100 text-red-700' :
-                                                        event.status === 'Improving' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>
-                                                    {event.status}
-                                                </span>
+                                            <h3 className="font-bold text-gray-900 text-lg">{scan.disease_detected}</h3>
+                                            <div className="flex items-center text-sm text-gray-500 mt-1">
+                                                <Calendar className="w-4 h-4 mr-1.5" />
+                                                {formatDate(scan.created_at)}
                                             </div>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
+
+                                    <div className="border-t border-gray-100 pt-3 mt-3">
+                                        <div className="flex justify-between items-center text-sm">
+                                            <span className="text-gray-600">AI Confidence</span>
+                                            <span className="font-semibold text-medical-600">
+                                                {(scan.confidence_score * 100).toFixed(1)}%
+                                            </span>
+                                        </div>
+                                        <div className="w-full bg-gray-100 rounded-full h-1.5 mt-2">
+                                            <div
+                                                className="bg-medical-600 h-1.5 rounded-full"
+                                                style={{ width: `${scan.confidence_score * 100}%` }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );

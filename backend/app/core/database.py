@@ -16,7 +16,8 @@ async def get_db():
         db.client = AsyncIOMotorClient(
             settings.MONGO_URL,
             tls=True,
-            tlsAllowInvalidCertificates=True
+            tlsAllowInvalidCertificates=True,
+            tlsCAFile=certifi.where()
         )
         db.engine = AIOEngine(client=db.client, database="skincare_ai")
     return db.engine

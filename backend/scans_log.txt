@@ -1,0 +1,14 @@
+
+--- Found 2 Recent Scans ---
+ID: 69614217c07c18c980d4f571
+User ID: 696141ffc07c18c980d4f570
+Time: 2026-01-09 17:59:51.734000
+URL: uploads\scans\1767961791.732937_Screenshot 2025-12-05 153309.png
+Disease: Benign Keratosis
+------------------------------
+ID: 69613f6287d5fd74bc4ef426
+User ID: 69613f4c379a4d449be93d6a
+Time: 2026-01-09 17:48:18.726000
+URL: uploads\scans\1767961098.723355_Screenshot 2025-12-03 175548.png
+Disease: Benign Keratosis
+------------------------------
