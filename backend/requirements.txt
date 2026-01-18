@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+motor
+odmantic
+pydantic
+pydantic-settings
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+fastapi-mail
+google-auth
+requests
+pillow
+numpy
+scikit-learn
+opencv-python-headless
