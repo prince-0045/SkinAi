@@ -17,7 +17,8 @@ async def test_connection():
             settings.MONGO_URL, 
             serverSelectionTimeoutMS=5000,
             tls=True,
-            tlsAllowInvalidCertificates=True
+            tlsAllowInvalidCertificates=True,
+            tlsCAFile=certifi.where()
         )
         print("Client created. Ping server...")
         await client.server_info()

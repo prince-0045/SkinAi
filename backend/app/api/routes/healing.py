@@ -4,15 +4,15 @@ from app.models.domain import HealingProgress
 from app.api.deps import get_current_user
 from app.core.database import get_db
 from odmantic import AIOEngine
-import shutil
-from pathlib import Path
+import cloudinary.uploader
+from app.core import cloudinary_config
 from datetime import datetime
 import random
 
 router = APIRouter()
 
-UPLOAD_DIR = Path("uploads/healing")
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+# UPLOAD_DIR = Path("uploads/healing")
+# UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 @router.post("/record")
 async def record_progress(
@@ -23,22 +23,20 @@ async def record_progress(
 ):
     try:
         # Save before image
-        before_path = UPLOAD_DIR / f"before_{datetime.utcnow().timestamp()}_{before_image.filename}"
-        with before_path.open("wb") as buffer:
-            shutil.copyfileobj(before_image.file, buffer)
+        before_result = cloudinary.uploader.upload(before_image.file, folder="skinai/healing")
+        before_url = before_result["secure_url"]
             
         # Save after image
-        after_path = UPLOAD_DIR / f"after_{datetime.utcnow().timestamp()}_{after_image.filename}"
-        with after_path.open("wb") as buffer:
-            shutil.copyfileobj(after_image.file, buffer)
+        after_result = cloudinary.uploader.upload(after_image.file, folder="skinai/healing")
+        after_url = after_result["secure_url"]
             
         # Calculate improvement (Mock logic)
         improvement = random.uniform(5.0, 30.0) # Mock improvement percentage
         
         progress = HealingProgress(
             user_id=str(current_user.id),
-            before_image=str(before_path),
-            after_image=str(after_path),
+            before_image=before_url,
+            after_image=after_url,
             improvement_percentage=improvement
         )
         await db.save(progress)

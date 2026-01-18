@@ -4,15 +4,15 @@ from app.models.domain import SkinScan
 from app.api.deps import get_current_user
 from app.core.database import get_db
 from odmantic import AIOEngine
-import shutil
-from pathlib import Path
+import cloudinary.uploader
+from app.core import cloudinary_config
 import random
 from datetime import datetime
 
 router = APIRouter()
 
-UPLOAD_DIR = Path("uploads/scans")
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+# UPLOAD_DIR = Path("uploads/scans")
+# UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 # Mock ML function
 def predict_skin_disease(image_path):
@@ -29,18 +29,22 @@ async def predict_disease(
     db: AIOEngine = Depends(get_db)
 ):
     try:
-        # Save file
-        file_path = UPLOAD_DIR / f"{datetime.utcnow().timestamp()}_{file.filename}"
-        with file_path.open("wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+        # Save file to Cloudinary
+        print("DEBUG: Starting Cloudinary upload...")
+        print(f"DEBUG: Cloud Name in settings: {cloudinary.config().cloud_name}")
+        result = cloudinary.uploader.upload(file.file, folder="skinai/scans")
+        print("DEBUG: Upload successful!")
+        image_url = result["secure_url"]
             
-        # Run inference
-        disease, confidence, severity = predict_skin_disease(file_path)
+        # Run inference (Updated to use URL or temp file if needed, keeping mock for now)
+        # Note: In a real scenario, you might need to download the image or pass the URL to the ML model.
+        # For this mock, we just pass the URL string as a path placeholder.
+        disease, confidence, severity = predict_skin_disease(image_url)
         
         # Save result
         scan = SkinScan(
             user_id=str(current_user.id),
-            image_url=str(file_path),
+            image_url=image_url,
             disease_detected=disease,
             confidence_score=confidence,
             severity_level=severity
