@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../context/AuthContext';
 import { User, Shield, Phone, Mail, LogOut, Clock, Calendar, CheckCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Profile() {
     const { user, logout } = useAuth();
@@ -25,10 +23,12 @@ export default function Profile() {
     if (!user) return null;
 
     const userData = {
-        name: user?.name,
+        name: user?.name || "User",
         email: user?.email,
         phone: "+1 (555) 123-4567",
-        memberSince: "Oct 2025"
+        memberSince: user?.created_at
+            ? new Date(user.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
+            : "Jan 2026" // Fallback if date is missing (e.g. initial login before refresh)
     };
 
     const history = [
@@ -134,6 +134,11 @@ export default function Profile() {
                             </div>
                         )}
                     </div>
+                </div>
+                {/* Debug Info */}
+                <div className="mt-8 p-4 bg-gray-100 rounded-lg overflow-auto">
+                    <p className="text-xs font-mono text-gray-500 mb-2">Debug Data (Developer Only):</p>
+                    <pre className="text-xs text-gray-700">{JSON.stringify(user, null, 2)}</pre>
                 </div>
             </div>
         </div>

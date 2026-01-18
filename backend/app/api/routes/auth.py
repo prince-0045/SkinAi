@@ -118,7 +118,15 @@ async def login(
     user.last_login = datetime.utcnow()
     await db.save(user)
     
-    return {"access_token": access_token, "token_type": "bearer", "user": {"name": user.name, "email": user.email}}
+    return {
+        "access_token": access_token, 
+        "token_type": "bearer", 
+        "user": {
+            "name": user.name, 
+            "email": user.email, 
+            "created_at": user.created_at.isoformat() if user.created_at else None
+        }
+    }
 
 @router.post("/google")
 async def google_login(
@@ -176,7 +184,15 @@ async def google_login(
         user.last_login = datetime.utcnow()
         await db.save(user)
         
-        return {"access_token": access_token, "token_type": "bearer", "user": {"name": user.name, "email": user.email}}
+        return {
+            "access_token": access_token, 
+            "token_type": "bearer", 
+            "user": {
+                "name": user.name, 
+                "email": user.email,
+                "created_at": user.created_at.isoformat() if user.created_at else None
+            }
+        }
         
     except Exception as e:
         print(f"Google Login Error: {e}")

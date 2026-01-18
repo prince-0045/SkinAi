@@ -10,11 +10,44 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         // Check for stored user/token on mount
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-        setLoading(false);
+        const initAuth = async () => {
+            const storedToken = localStorage.getItem('token');
+
+            if (storedToken) {
+                try {
+                    // Verify token with backend
+                    const response = await fetch('/api/v1/users/me', {
+                        headers: {
+                            'Authorization': `Bearer ${storedToken}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const userData = await response.json();
+                        setUser(userData);
+                        // Update stored user data if changed
+                        localStorage.setItem('user', JSON.stringify(userData));
+                    } else {
+                        // Token invalid or expired
+                        console.warn("Token invalid, logging out");
+                        localStorage.removeItem('user');
+                        localStorage.removeItem('token');
+                        setUser(null);
+                    }
+                } catch (error) {
+                    console.error("Failed to verify token", error);
+                    // If network error, maybe keep user logged in or not? 
+                    // Safer to force login if we can't verify.
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('token');
+                    setUser(null);
+                }
+            } else {
+                setUser(null);
+            }
+            setLoading(false);
+        };
+        initAuth();
     }, []);
 
     const login = async (email, password) => {

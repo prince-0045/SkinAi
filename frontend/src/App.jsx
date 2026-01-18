@@ -26,6 +26,19 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// Public Route Component (redirects to track if already logged in)
+const PublicRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) return <div>Loading...</div>;
+
+  if (user) {
+    return <Navigate to="/track" replace />;
+  }
+
+  return children;
+};
+
 function App() {
   return (
     <div className="flex flex-col min-h-screen">
@@ -33,34 +46,37 @@ function App() {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/otp" element={<OTP />} />
+
+          {/* Public Routes (only accessible if NOT logged in) */}
+          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+          <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+          <Route path="/otp" element={<PublicRoute><OTP /></PublicRoute>} />
+
           <Route path="/success" element={<Success />} />
 
           {/* Protected Routes */}
           <Route
             path="/detect"
             element={
-              //   <ProtectedRoute>
-              <Detect />
-              //   </ProtectedRoute>
+              <ProtectedRoute>
+                <Detect />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/track"
             element={
-              //   <ProtectedRoute>
-              <Tracker />
-              //   </ProtectedRoute>
+              <ProtectedRoute>
+                <Tracker />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/profile"
             element={
-              //   <ProtectedRoute>
-              <Profile />
-              //   </ProtectedRoute>
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
             }
           />
         </Routes>
