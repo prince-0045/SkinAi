@@ -84,13 +84,21 @@ export const AuthProvider = ({ children }) => {
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.detail || 'Signup failed');
+                try {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Signup failed');
+                } catch (parseError) {
+                    throw new Error('Signup failed');
+                }
             }
 
-            const data = await response.json();
-            // Returns { message: "...", otp_debug: "..." } (if supported)
-            return { success: true, otpDebug: data.otp_debug };
+            try {
+                const data = await response.json();
+                // Returns { message: "...", otp_debug: "..." } (if supported)
+                return { success: true, otpDebug: data.otp_debug };
+            } catch (parseError) {
+                throw new Error('Invalid response from server');
+            }
         } catch (error) {
             return { success: false, error: error.message };
         }
