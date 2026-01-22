@@ -9,13 +9,13 @@ const isTokenExpired = (token) => {
     try {
         const parts = token.split('.');
         if (parts.length !== 3) return true;
-        
+
         // Decode the payload (second part)
         const decoded = JSON.parse(atob(parts[1]));
         const exp = decoded.exp;
-        
+
         if (!exp) return true;
-        
+
         // Check if token expiration time has passed (convert to milliseconds)
         const currentTime = Math.floor(Date.now() / 1000);
         return exp < currentTime;

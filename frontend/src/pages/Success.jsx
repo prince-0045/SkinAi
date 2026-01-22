@@ -55,7 +55,7 @@ export default function Success() {
 
                 <div className="space-y-3">
                     <Link
-                        to="/detect"
+                        to="/"
                         className="w-full flex justify-center items-center py-3 px-4 rounded-lg bg-medical-600 text-white font-medium hover:bg-medical-700 transition"
                     >
                         Start Diagnosis <ArrowRight className="ml-2 w-4 h-4" />
