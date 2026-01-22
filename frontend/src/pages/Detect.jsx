@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, X, AlertCircle, FileText, CheckCircle } from 'lucide-react';
 import ScanningLoader from '../components/animations/ScanningLoader';
 import { useAuth } from '../context/AuthContext';
+import DoctorFinder from '../components/DoctorFinder';
 
 export default function Detect() {
     const [file, setFile] = useState(null);
@@ -134,51 +135,60 @@ export default function Detect() {
                     <div className="space-y-6">
                         <AnimatePresence>
                             {result ? (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-medical-500"
-                                >
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h2 className="text-xl font-bold text-gray-900">Analysis Result</h2>
-                                        <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold flex items-center">
-                                            <CheckCircle className="w-4 h-4 mr-1" /> Complete
-                                        </span>
-                                    </div>
-
-                                    <div className="mb-6">
-                                        <p className="text-sm text-gray-500 mb-1">Detected Condition</p>
-                                        <div className="text-3xl font-bold text-medical-700">{result.disease}</div>
-                                        <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
-                                            <div className="bg-medical-600 h-2.5 rounded-full" style={{ width: `${result.confidence}%` }}></div>
-                                        </div>
-                                        <div className="flex justify-between mt-1 text-xs text-gray-500">
-                                            <span>Confidence Score</span>
-                                            <span className="font-bold">{result.confidence}%</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <div className="p-4 bg-medical-50 rounded-lg">
-                                            <h3 className="font-semibold text-medical-900 mb-1">Description</h3>
-                                            <p className="text-sm text-medical-800">{result.description}</p>
+                                <>
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-medical-500"
+                                    >
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h2 className="text-xl font-bold text-gray-900">Analysis Result</h2>
+                                            <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold flex items-center">
+                                                <CheckCircle className="w-4 h-4 mr-1" /> Complete
+                                            </span>
                                         </div>
 
-                                        <div className="p-4 bg-yellow-50 rounded-lg">
-                                            <h3 className="font-semibold text-yellow-900 mb-1 flex items-center">
-                                                <AlertCircle className="w-4 h-4 mr-2" />
-                                                Recommendation
-                                            </h3>
-                                            <p className="text-sm text-yellow-800">{result.recommendation}</p>
+                                        <div className="mb-6">
+                                            <p className="text-sm text-gray-500 mb-1">Detected Condition</p>
+                                            <div className="text-3xl font-bold text-medical-700">{result.disease}</div>
+                                            <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
+                                                <div className="bg-medical-600 h-2.5 rounded-full" style={{ width: `${result.confidence}%` }}></div>
+                                            </div>
+                                            <div className="flex justify-between mt-1 text-xs text-gray-500">
+                                                <span>Confidence Score</span>
+                                                <span className="font-bold">{result.confidence}%</span>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div className="mt-6 pt-4 border-t border-gray-100 text-center">
-                                        <button className="text-medical-600 font-medium text-sm hover:underline flex items-center justify-center mx-auto">
-                                            <FileText className="w-4 h-4 mr-1" /> Save to Health Record
-                                        </button>
-                                    </div>
-                                </motion.div>
+                                        <div className="space-y-4">
+                                            <div className="p-4 bg-medical-50 rounded-lg">
+                                                <h3 className="font-semibold text-medical-900 mb-1">Description</h3>
+                                                <p className="text-sm text-medical-800">{result.description}</p>
+                                            </div>
+
+                                            <div className="p-4 bg-yellow-50 rounded-lg">
+                                                <h3 className="font-semibold text-yellow-900 mb-1 flex items-center">
+                                                    <AlertCircle className="w-4 h-4 mr-2" />
+                                                    Recommendation
+                                                </h3>
+                                                <p className="text-sm text-yellow-800">{result.recommendation}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-6 pt-4 border-t border-gray-100 text-center">
+                                            <button className="text-medical-600 font-medium text-sm hover:underline flex items-center justify-center mx-auto">
+                                                <FileText className="w-4 h-4 mr-1" /> Save to Health Record
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.2 }}
+                                    >
+                                        <DoctorFinder />
+                                    </motion.div>
+                                </>
                             ) : (
                                 <div className="h-full flex flex-col items-center justify-center p-8 text-center text-gray-400 bg-white rounded-2xl border border-gray-100 border-dashed">
                                     <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
@@ -192,6 +202,6 @@ export default function Detect() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

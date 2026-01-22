@@ -15,3 +15,5 @@ numpy
 scikit-learn
 opencv-python-headless
 cloudinary
+
+boto3
