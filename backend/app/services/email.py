@@ -12,8 +12,9 @@ conf = ConnectionConfig(
     MAIL_STARTTLS=True,
     MAIL_SSL_TLS=False,
     USE_CREDENTIALS=True,
-    VALIDATE_CERTS=True
+    VALIDATE_CERTS=True,
 )
+
 
 async def send_otp_email(email: EmailStr, otp: str):
     print(f"Attempting to send OTP email to {email}")
@@ -29,14 +30,14 @@ async def send_otp_email(email: EmailStr, otp: str):
         </body>
     </html>
     """
-    
+
     message = MessageSchema(
         subject="SkinCare AI - Verification Code",
         recipients=[email],
         body=html,
-        subtype=MessageType.html
+        subtype=MessageType.html,
     )
-    
+
     fm = FastMail(conf)
     try:
         await fm.send_message(message)
@@ -44,6 +45,7 @@ async def send_otp_email(email: EmailStr, otp: str):
     except Exception as e:
         print(f"Error sending email: {e}")
         raise e
+
 
 async def send_welcome_email(email: EmailStr, name: str):
     html = f"""
@@ -57,13 +59,18 @@ async def send_welcome_email(email: EmailStr, name: str):
         </body>
     </html>
     """
-    
+
     message = MessageSchema(
         subject="Welcome to SkinCare AI",
         recipients=[email],
         body=html,
-        subtype=MessageType.html
+        subtype=MessageType.html,
     )
-    
+
     fm = FastMail(conf)
-    await fm.send_message(message)
+    try:
+        await fm.send_message(message)
+        print("Welcome email sent successfully")
+    except Exception as e:
+        print(f"Error sending welcome email: {e}")
+        raise e

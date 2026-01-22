@@ -4,6 +4,27 @@ const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
+// Helper function to check if JWT token is expired
+const isTokenExpired = (token) => {
+    try {
+        const parts = token.split('.');
+        if (parts.length !== 3) return true;
+        
+        // Decode the payload (second part)
+        const decoded = JSON.parse(atob(parts[1]));
+        const exp = decoded.exp;
+        
+        if (!exp) return true;
+        
+        // Check if token expiration time has passed (convert to milliseconds)
+        const currentTime = Math.floor(Date.now() / 1000);
+        return exp < currentTime;
+    } catch (error) {
+        console.error("Error decoding token:", error);
+        return true;
+    }
+};
+
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -14,6 +35,16 @@ export const AuthProvider = ({ children }) => {
             const storedToken = localStorage.getItem('token');
 
             if (storedToken) {
+                // Check token expiration before making backend call
+                if (isTokenExpired(storedToken)) {
+                    console.warn("Token expired, logging out");
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('token');
+                    setUser(null);
+                    setLoading(false);
+                    return;
+                }
+
                 try {
                     // Verify token with backend
                     const response = await fetch('/api/v1/users/me', {
@@ -84,13 +115,21 @@ export const AuthProvider = ({ children }) => {
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.detail || 'Signup failed');
+                try {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Signup failed');
+                } catch (parseError) {
+                    throw new Error('Signup failed');
+                }
             }
 
-            const data = await response.json();
-            // Returns { message: "...", otp_debug: "..." } (if supported)
-            return { success: true, otpDebug: data.otp_debug };
+            try {
+                const data = await response.json();
+                // Returns { message: "...", otp_debug: "..." } (if supported)
+                return { success: true, otpDebug: data.otp_debug };
+            } catch (parseError) {
+                throw new Error('Invalid response from server');
+            }
         } catch (error) {
             return { success: false, error: error.message };
         }
