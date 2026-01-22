@@ -14,16 +14,7 @@ class SkinScan(Model):
         "collection": "skin_scans"
     }
 
-class HealingProgress(Model):
-    user_id: str
-    before_image: str
-    after_image: str
-    improvement_percentage: float
-    comparison_date: datetime = Field(default_factory=datetime.utcnow)
-    
-    model_config = {
-        "collection": "healing_progress"
-    }
+
 
 class OTPLog(Model):
     email: str
