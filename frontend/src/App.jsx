@@ -12,6 +12,7 @@ import Success from './pages/Success';
 import Detect from './pages/Detect';
 import Tracker from './pages/Tracker';
 import Profile from './pages/Profile';
+import Doctors from './pages/Doctors';
 import { useAuth } from './context/AuthContext';
 
 const ProtectedRoute = ({ children }) => {
@@ -76,6 +77,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/doctors"
+            element={
+              <ProtectedRoute>
+                <Doctors />
               </ProtectedRoute>
             }
           />

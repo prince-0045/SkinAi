@@ -3,8 +3,6 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import certifi
 import os
 
-# Updated URL without the invalid cert flag
-MONGO_URL = "mongodb+srv://pilu_skinai:pilu%402001@cluster0.wmgxzy3.mongodb.net/?appName=Cluster0"
 
 async def test_connection():
     print(f"Testing connection to: {MONGO_URL.split('@')[1]}")

@@ -50,15 +50,15 @@ export default function Tracker() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300 pt-24 pb-12">
             <Helmet>
-                <title>My Scans - SkinAi</title>
+                <title>History - SkinAi</title>
             </Helmet>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">My Scans</h1>
-                    <p className="text-gray-600">History of your uploaded skin scans and analysis results.</p>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Scan History</h1>
+                    <p className="text-gray-600 dark:text-gray-400">Archive of your past skin analyses.</p>
                 </div>
 
                 {loading ? (
@@ -83,7 +83,7 @@ export default function Tracker() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.1 }}
-                                className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+                                className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden hover:shadow-md transition-shadow"
                             >
                                 <div className="aspect-video relative overflow-hidden bg-gray-100 group">
                                     <img
@@ -103,8 +103,8 @@ export default function Tracker() {
                                 <div className="p-5">
                                     <div className="flex justify-between items-start mb-3">
                                         <div>
-                                            <h3 className="font-bold text-gray-900 text-lg">{scan.disease_detected}</h3>
-                                            <div className="flex items-center text-sm text-gray-500 mt-1">
+                                            <h3 className="font-bold text-gray-900 dark:text-white text-lg">{scan.disease_detected}</h3>
+                                            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
                                                 <Calendar className="w-4 h-4 mr-1.5" />
                                                 {formatDate(scan.created_at)}
                                             </div>

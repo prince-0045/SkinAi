@@ -77,16 +77,16 @@ export default function Detect() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 pt-20 pb-12">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300 pt-20 pb-12">
             <div className="max-w-4xl mx-auto px-4 sm:px-6">
                 <div className="text-center mb-10">
-                    <h1 className="text-3xl font-bold text-gray-900">AI Skin Disease Detection</h1>
-                    <p className="mt-2 text-gray-600">Upload a clear photo of the affected area for instant analysis.</p>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">AI Skin Disease Detection</h1>
+                    <p className="mt-2 text-gray-600 dark:text-gray-400">Upload a clear photo of the affected area for instant analysis.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Upload Area */}
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 transition-colors duration-300">
                         {!preview ? (
                             <div
                                 {...getRootProps()}
@@ -97,8 +97,8 @@ export default function Detect() {
                                 <div className="w-16 h-16 bg-medical-50 rounded-full flex items-center justify-center mb-4 text-medical-600">
                                     <Upload className="w-8 h-8" />
                                 </div>
-                                <p className="text-lg font-medium text-gray-900">Click to upload or drag & drop</p>
-                                <p className="text-sm text-gray-500 mt-1">SVG, PNG, JPG or GIF (max. 5MB)</p>
+                                <p className="text-lg font-medium text-gray-900 dark:text-gray-200">Click to upload or drag & drop</p>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">SVG, PNG, JPG or GIF (max. 5MB)</p>
                             </div>
                         ) : (
                             <div className="relative h-80 bg-black rounded-xl overflow-hidden flex items-center justify-center mb-4">

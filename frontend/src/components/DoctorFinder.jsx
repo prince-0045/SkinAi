@@ -48,14 +48,14 @@ export default function DoctorFinder({ initialCoords }) {
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-8">
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden mt-8 transition-colors duration-300">
+            <div className="p-6 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center bg-gray-50 dark:bg-slate-900/50">
                 <div>
-                    <h3 className="text-lg font-bold text-gray-900 flex items-center">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
                         <MapPin className="w-5 h-5 text-medical-600 mr-2" />
                         Find Dermatologists Nearby
                     </h3>
-                    <p className="text-sm text-gray-500 mt-1">Locate specialists in your area based on your current location.</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Locate specialists in your area based on your current location.</p>
                 </div>
                 {!searched && (
                     <button
@@ -85,8 +85,8 @@ export default function DoctorFinder({ initialCoords }) {
                         doctors.map((doc, index) => (
                             <div key={index} className="p-4 hover:bg-gray-50 transition flex flex-col sm:flex-row sm:items-center justify-between">
                                 <div className="mb-4 sm:mb-0">
-                                    <h4 className="font-semibold text-gray-900">{doc.name}</h4>
-                                    <div className="flex items-center text-sm text-gray-600 mt-1">
+                                    <h4 className="font-semibold text-gray-900 dark:text-white">{doc.name}</h4>
+                                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mt-1">
                                         <MapPin className="w-3 h-3 mr-1" />
                                         <span>{doc.address}</span>
                                     </div>
@@ -110,7 +110,7 @@ export default function DoctorFinder({ initialCoords }) {
                                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(doc.name + ' ' + doc.address)}&query_place_id=${doc.place_id}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center px-3 py-2 border border-gray-200 text-gray-700 rounded-lg hover:bg-white hover:border-medical-300 hover:text-medical-600 transition text-sm font-medium"
+                                        className="flex items-center px-3 py-2 border border-gray-200 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-white dark:hover:bg-slate-700 hover:border-medical-300 hover:text-medical-600 transition text-sm font-medium"
                                     >
                                         <ExternalLink className="w-4 h-4 mr-2" />
                                         Directions

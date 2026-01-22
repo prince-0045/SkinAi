@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -20,12 +21,12 @@ export default {
           900: '#0c4a6e',
         },
         primary: {
-            DEFAULT: '#0ea5e9', // Medical blue
-            foreground: '#ffffff',
+          DEFAULT: '#0ea5e9', // Medical blue
+          foreground: '#ffffff',
         },
         secondary: {
-            DEFAULT: '#10b981', // Medical green
-            foreground: '#ffffff',
+          DEFAULT: '#10b981', // Medical green
+          foreground: '#ffffff',
         }
       },
       fontFamily: {

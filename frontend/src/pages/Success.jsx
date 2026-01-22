@@ -37,7 +37,7 @@ export default function Success() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-medical-50 flex items-center justify-center px-4">
+        <div className="min-h-screen bg-medical-50 dark:bg-slate-900 transition-colors duration-300 flex items-center justify-center px-4">
             <motion.div
                 className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center"
                 initial={{ scale: 0.9, opacity: 0 }}
@@ -48,8 +48,8 @@ export default function Success() {
                     <CheckCircle className="w-10 h-10 text-green-600" />
                 </div>
 
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Aboard!</h2>
-                <p className="text-gray-600 mb-8">
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Welcome Aboard!</h2>
+                <p className="text-gray-600 dark:text-gray-400 mb-8">
                     Your account has been successfully verified. You now have access to our AI detection and healing tracker.
                 </p>
 
@@ -62,7 +62,7 @@ export default function Success() {
                     </Link>
                     <Link
                         to="/"
-                        className="w-full flex justify-center items-center py-3 px-4 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition"
+                        className="w-full flex justify-center items-center py-3 px-4 rounded-lg border border-gray-200 dark:border-slate-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 transition"
                     >
                         Go to Home
                     </Link>

@@ -111,13 +111,13 @@ export default function Profile() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300 pt-24 pb-12">
             <Helmet>
                 <title>Profile - SkinAi</title>
             </Helmet>
 
             <div className="max-w-4xl mx-auto px-4 sm:px-6">
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden transition-colors duration-300">
                     {/* Header */}
                     <div className="bg-medical-900 h-32 relative">
                         <div className="absolute -bottom-12 left-8">
@@ -132,8 +132,8 @@ export default function Profile() {
                     <div className="pt-16 pb-8 px-8">
                         <div className="flex justify-between items-start mb-6">
                             <div>
-                                <h1 className="text-2xl font-bold text-gray-900">{userData.name}</h1>
-                                <div className="flex items-center text-gray-500 mt-1 space-x-4 text-sm">
+                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{userData.name}</h1>
+                                <div className="flex items-center text-gray-500 dark:text-gray-400 mt-1 space-x-4 text-sm">
                                     <span className="flex items-center"><Mail className="w-4 h-4 mr-1" /> {userData.email}</span>
                                     <span className="flex items-center"><Calendar className="w-4 h-4 mr-1" /> Member since {userData.memberSince}</span>
                                 </div>
@@ -146,7 +146,7 @@ export default function Profile() {
                             </button>
                         </div>
 
-                        <div className="border-b border-gray-200 mb-8">
+                        <div className="border-b border-gray-200 dark:border-slate-700 mb-8">
                             <nav className="-mb-px flex space-x-8">
                                 <button
                                     onClick={() => setActiveTab('history')}
@@ -206,8 +206,8 @@ export default function Profile() {
                                 </div>
 
                                 <div>
-                                    <h4 className="font-medium text-gray-900 mb-2">Account Security</h4>
-                                    <p className="text-sm text-gray-500 mb-4">Manage your password and authentication methods.</p>
+                                    <h4 className="font-medium text-gray-900 dark:text-white mb-2">Account Security</h4>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Manage your password and authentication methods.</p>
                                     <button
                                         onClick={() => setIsChangePasswordOpen(true)}
                                         className="text-medical-600 text-sm font-medium hover:bg-medical-50 px-3 py-2 rounded-lg -ml-3 transition"

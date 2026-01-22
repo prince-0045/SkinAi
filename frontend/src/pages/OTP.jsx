@@ -47,7 +47,7 @@ export default function OTP() {
         setLoading(false);
 
         if (res.success) {
-            navigate('/success');
+            navigate('/profile');
         } else {
             setError(res.error);
         }

@@ -1,14 +1,14 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import Hero from '../components/landing/Hero';
-// import Features from '../components/landing/Features'; // To be created
+import FeatureCarousel from '../components/landing/FeatureCarousel';
 // import Testimonials from '../components/landing/Testimonials'; // To be created
 import { motion } from 'framer-motion';
 import { Activity, Clock, Shield, Upload } from 'lucide-react';
 
 const FeatureCard = ({ icon: Icon, title, description, delay }) => (
     <motion.div
-        className="relative p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+        className="relative p-6 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -17,26 +17,27 @@ const FeatureCard = ({ icon: Icon, title, description, delay }) => (
         <div className="w-12 h-12 bg-medical-50 rounded-xl flex items-center justify-center mb-4 text-medical-600">
             <Icon className="w-6 h-6" />
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
-        <p className="text-gray-500">{description}</p>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
+        <p className="text-gray-500 dark:text-gray-400">{description}</p>
     </motion.div>
 );
 
 export default function Landing() {
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-white dark:bg-slate-900 transition-colors duration-300">
             <Helmet>
                 <title>SkinAi - Advanced Skin Disease Detection</title>
                 <meta name="description" content="AI-powered skin disease detection and healing tracker." />
             </Helmet>
 
             <Hero />
+            <FeatureCarousel />
 
             {/* Features Section - Inline for now or separate later */}
-            <section className="py-24 bg-white">
+            <section className="py-24 bg-white dark:bg-slate-900 transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">Why Choose SkinAi?</h2>
+                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">Why Choose SkinAi?</h2>
                         <p className="mt-4 text-lg text-gray-500">Comprehensive dermatological analysis at your fingertips</p>
                     </div>
 

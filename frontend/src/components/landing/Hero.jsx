@@ -6,7 +6,7 @@ import DNAHelix from '../animations/DNAHelix';
 
 export default function Hero() {
     return (
-        <div className="relative overflow-hidden bg-gradient-to-b from-medical-50 to-white pt-16 pb-32">
+        <div className="relative overflow-hidden bg-gradient-to-b from-medical-50 to-white dark:from-slate-900 dark:to-slate-800 transition-colors duration-300 pt-16 pb-32">
             {/* Abstract Background Shapes */}
             <div className="absolute top-0 right-0 -translate-y-12 translate-x-12 opacity-10">
                 <DNAHelix className="w-96 h-96" />
@@ -21,15 +21,15 @@ export default function Hero() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
                     >
-                        <div className="inline-flex items-center px-4 py-2 rounded-full bg-medical-50 text-medical-600 text-sm font-semibold mb-6 border border-medical-100">
+                        <div className="inline-flex items-center px-4 py-2 rounded-full bg-medical-50 dark:bg-medical-900/30 text-medical-600 dark:text-medical-400 text-sm font-semibold mb-6 border border-medical-100 dark:border-medical-800">
                             <ShieldCheck className="w-4 h-4 mr-2" />
                             AI-Powered Dermatology
                         </div>
-                        <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
+                        <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
                             <span className="block">Advanced Skin Care</span>
                             <span className="block text-medical-600">Powered by AI</span>
                         </h1>
-                        <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                        <p className="mt-3 text-base text-gray-500 dark:text-gray-400 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
                             Detect skin conditions instantly, track healing progress, and get personalized insights with our medical-grade AI technology.
                         </p>
                         <div className="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
@@ -43,9 +43,9 @@ export default function Hero() {
                                 </Link>
                                 <Link
                                     to="/track"
-                                    className="inline-flex items-center justify-center px-8 py-3 border border-gray-200 text-base font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 md:py-4 md:text-lg transition-all"
+                                    className="inline-flex items-center justify-center px-8 py-3 border border-gray-200 dark:border-slate-600 text-base font-medium rounded-full text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 md:py-4 md:text-lg transition-all"
                                 >
-                                    Track Healing
+                                    View History
                                 </Link>
                             </div>
                             <p className="mt-4 text-sm text-gray-400 flex items-center gap-2 sm:justify-center lg:justify-start">
@@ -63,7 +63,7 @@ export default function Hero() {
                         transition={{ duration: 0.8, delay: 0.2 }}
                     >
                         <div className="relative mx-auto w-full rounded-lg lg:max-w-md">
-                            <div className="relative block w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-medical-50">
+                            <div className="relative block w-full bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-medical-50 dark:border-slate-700">
                                 <img
                                     src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80"
                                     alt="Medical Analysis"

@@ -25,7 +25,7 @@ export default function Signup() {
                 console.log("Backend Google Login Response:", res);
                 setLoading(false);
                 if (res.success) {
-                    navigate('/track');
+                    navigate('/profile');
                 } else {
                     console.error("Backend Error:", res.error);
                     setError(res.error || 'Google signup failed');

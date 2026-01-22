@@ -6,7 +6,7 @@ import DNAHelix from '../animations/DNAHelix';
 
 export default function AuthLayout({ children, title, subtitle }) {
     return (
-        <div className="min-h-screen flex bg-white">
+        <div className="min-h-screen flex bg-white dark:bg-slate-900 transition-colors duration-300">
             {/* Left Side - Form */}
             <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 sm:px-12 md:px-24">
                 <Link to="/" className="absolute top-8 left-8 text-gray-500 hover:text-medical-600 transition-colors flex items-center">
@@ -23,8 +23,8 @@ export default function AuthLayout({ children, title, subtitle }) {
                             <ShieldCheck className="w-4 h-4 mr-2" />
                             Secure Medical Login
                         </div>
-                        <h2 className="text-3xl font-bold text-gray-900">{title}</h2>
-                        <p className="mt-2 text-gray-600">{subtitle}</p>
+                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{title}</h2>
+                        <p className="mt-2 text-gray-600 dark:text-gray-400">{subtitle}</p>
                     </div>
 
                     {children}
