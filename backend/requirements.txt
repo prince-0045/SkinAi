@@ -16,3 +16,8 @@ numpy
 scikit-learn
 opencv-python-headless
 cloudinary
+torch
+torchvision
+timm
+scikit-image
+albumentations
