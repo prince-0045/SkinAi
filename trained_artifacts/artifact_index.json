@@ -1,0 +1,27 @@
+{
+  "DenseNet121": {
+    "model_name": "DenseNet121",
+    "architecture_path": "/content/trained_artifacts/DenseNet121_architecture.json",
+    "weights_path": "/content/trained_artifacts/DenseNet121.weights.h5",
+    "class_names": [
+      "Acitinic Keratosis",
+      "Basal Cell Carcinoma",
+      "Dermatofibroma",
+      "Melanoma",
+      "Nevus",
+      "Pigmented Benign Keratosis",
+      "Seborrheic Keratosis",
+      "Squamous Cell Carcinoma",
+      "Vascular Lesion"
+    ],
+    "image_size": [
+      224,
+      224
+    ],
+    "metrics": {
+      "accuracy": 0.6304700162074555,
+      "macro_f1": 0.6278197837078403
+    },
+    "saved_at_utc": "2026-03-06T18:41:38.984495+00:00"
+  }
+}
