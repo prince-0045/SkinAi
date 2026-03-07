@@ -9,10 +9,10 @@ conf = ConnectionConfig(
     MAIL_FROM=settings.MAIL_FROM,
     MAIL_PORT=settings.MAIL_PORT,
     MAIL_SERVER=settings.MAIL_SERVER,
-    MAIL_STARTTLS=True,
-    MAIL_SSL_TLS=False,
+    MAIL_STARTTLS=settings.MAIL_STARTTLS,
+    MAIL_SSL_TLS=settings.MAIL_SSL_TLS,
     USE_CREDENTIALS=True,
-    VALIDATE_CERTS=True,
+    VALIDATE_CERTS=False, # Disable certificate validation for better compatibility on Windows
 )
 
 
@@ -40,10 +40,13 @@ async def send_otp_email(email: EmailStr, otp: str):
 
     fm = FastMail(conf)
     try:
+        print(f"DEBUG: Connection Config: {conf.MAIL_SERVER}:{conf.MAIL_PORT}, User={conf.MAIL_USERNAME}")
         await fm.send_message(message)
         print("Email sent successfully")
     except Exception as e:
         print(f"Error sending email: {e}")
+        import traceback
+        traceback.print_exc()
         raise e
 
 

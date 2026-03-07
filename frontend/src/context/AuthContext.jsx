@@ -8,20 +8,16 @@ export const useAuth = () => useContext(AuthContext);
 const isTokenExpired = (token) => {
     try {
         const parts = token.split('.');
-        if (parts.length !== 3) return true;
-
-        // Decode the payload (second part)
+        if (parts.length !== 3) return false; // If it's a simple email (bypass remnant), it's not a real JWT
+        
         const decoded = JSON.parse(atob(parts[1]));
         const exp = decoded.exp;
-
-        if (!exp) return true;
-
-        // Check if token expiration time has passed (convert to milliseconds)
+        if (!exp) return false;
+        
         const currentTime = Math.floor(Date.now() / 1000);
         return exp < currentTime;
     } catch (error) {
-        console.error("Error decoding token:", error);
-        return true;
+        return false;
     }
 };
 
@@ -30,51 +26,16 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check for stored user/token on mount
         const initAuth = async () => {
-            const storedToken = localStorage.getItem('token');
+            const token = localStorage.getItem('token');
+            const storedUser = localStorage.getItem('user');
 
-            if (storedToken) {
-                // Check token expiration before making backend call
-                if (isTokenExpired(storedToken)) {
-                    console.warn("Token expired, logging out");
-                    localStorage.removeItem('user');
-                    localStorage.removeItem('token');
-                    setUser(null);
-                    setLoading(false);
-                    return;
+            if (token && storedUser) {
+                if (isTokenExpired(token)) {
+                    logout();
+                } else {
+                    setUser(JSON.parse(storedUser));
                 }
-
-                try {
-                    // Verify token with backend
-                    const response = await fetch('/api/v1/users/me', {
-                        headers: {
-                            'Authorization': `Bearer ${storedToken}`
-                        }
-                    });
-
-                    if (response.ok) {
-                        const userData = await response.json();
-                        setUser(userData);
-                        // Update stored user data if changed
-                        localStorage.setItem('user', JSON.stringify(userData));
-                    } else {
-                        // Token invalid or expired
-                        console.warn("Token invalid, logging out");
-                        localStorage.removeItem('user');
-                        localStorage.removeItem('token');
-                        setUser(null);
-                    }
-                } catch (error) {
-                    console.error("Failed to verify token", error);
-                    // If network error, maybe keep user logged in or not? 
-                    // Safer to force login if we can't verify.
-                    localStorage.removeItem('user');
-                    localStorage.removeItem('token');
-                    setUser(null);
-                }
-            } else {
-                setUser(null);
             }
             setLoading(false);
         };
@@ -163,7 +124,8 @@ export const AuthProvider = ({ children }) => {
             });
 
             if (!response.ok) {
-                throw new Error('Google login failed');
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Google login failed');
             }
 
             const data = await response.json();
@@ -174,12 +136,12 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             return { success: false, error: error.message };
         }
-    }
+    };
 
     const logout = () => {
-        setUser(null);
-        localStorage.removeItem('user');
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setUser(null);
     };
 
     const value = {

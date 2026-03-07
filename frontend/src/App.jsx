@@ -18,7 +18,7 @@ import { useAuth } from './context/AuthContext';
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
-  if (loading) return <div>Loading...</div>; // Replace with proper loader
+  if (loading) return <div>Loading...</div>;
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -27,7 +27,7 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-// Public Route Component (redirects to track if already logged in)
+// Public Route Component
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
 

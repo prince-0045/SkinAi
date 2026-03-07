@@ -61,8 +61,8 @@ export default function Detect() {
                     disease: data.disease_detected,
                     confidence: (data.confidence_score * 100).toFixed(1),
                     severity: data.severity_level,
-                    description: "AI analysis complete based on the uploaded image.", // Backend doesn't return description yet
-                    recommendation: "Please consult a dermatologist for a professional diagnosis." // Backend doesn't return recommendation yet
+                    description: data.description || "AI analysis complete based on the uploaded image.",
+                    recommendation: data.recommendation || "Please consult a dermatologist for a professional diagnosis."
                 });
             } else {
                 console.error("Analysis failed");

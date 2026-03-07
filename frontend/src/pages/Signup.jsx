@@ -52,14 +52,23 @@ export default function Signup() {
             setLoading(false);
 
             if (res.success) {
-                // If OTP debug is provided (dev mode), log it or show it
                 if (res.otpDebug) {
-                    console.log("DEBUG OTP:", res.otpDebug);
-                    // Optionally auto-redirect or alert
+                    console.log("DEBUG: OTP received in response:", res.otpDebug);
+                    alert("Developer Mode: OTP is " + res.otpDebug);
                 }
                 navigate('/otp', { state: { email, type: 'signup' } });
             } else {
-                setError(res.error || 'An unexpected error occurred.');
+                console.warn("Signup Rejected:", res.error);
+                if (res.error === "Email already registered") {
+                    setError(
+                        <div className="flex flex-col items-center p-2 bg-red-100 border-2 border-red-500 rounded-md">
+                            <span className="font-bold text-red-700 underline text-lg">EMAIL ALREADY REGISTERED</span>
+                            <Link to="/login" className="text-blue-600 font-bold underline mt-2 text-base">Please CLICK HERE to Login</Link>
+                        </div>
+                    );
+                } else {
+                    setError(res.error);
+                }
             }
         } catch (err) {
             setLoading(false);

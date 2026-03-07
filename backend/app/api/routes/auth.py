@@ -61,7 +61,7 @@ async def signup(
     try:
         # Enforce a short 5-second timeout for email sending in dev
         print(f"DEBUG: sending email to {email}")
-        await asyncio.wait_for(send_otp_email(email, otp), timeout=5.0)
+        await asyncio.wait_for(send_otp_email(email, otp), timeout=15.0)
         email_sent = True
     except Exception as e:
         print(f"Failed to send email (timeout or error): {e}")

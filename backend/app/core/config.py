@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     MAIL_FROM: str
     MAIL_PORT: int
     MAIL_SERVER: str
+    MAIL_STARTTLS: bool = True
+    MAIL_SSL_TLS: bool = False
     
     GOOGLE_CLIENT_ID: str
     GOOGLE_CLIENT_SECRET: str
@@ -26,8 +28,11 @@ class Settings(BaseSettings):
     AWS_SECRET_ACCESS_KEY: Optional[str] = None
     AWS_REGION: str = "us-east-1"
     AWS_PLACE_INDEX: Optional[str] = None
+    
+    FRONTEND_URL: str = "http://localhost:5173"
 
     class Config:
-        env_file = ".env"
+        env_file = "../.env"
+        extra = "ignore"
 
 settings = Settings()

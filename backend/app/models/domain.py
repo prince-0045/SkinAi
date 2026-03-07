@@ -8,6 +8,8 @@ class SkinScan(Model):
     disease_detected: str
     confidence_score: float
     severity_level: str
+    description: Optional[str] = None
+    recommendation: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
     model_config = {

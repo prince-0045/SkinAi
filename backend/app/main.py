@@ -11,12 +11,15 @@ async def log_requests(request, call_next):
     print(f"DEBUG: Response Status: {response.status_code}")
     return response
 
+from app.core.config import settings
+
 # CORS
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:8000",
     "http://10.99.173.187:5173", # Local Network Access
+    getattr(settings, "FRONTEND_URL", "http://localhost:5173"),
 ]
 
 app.add_middleware(
