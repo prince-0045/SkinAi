@@ -11,9 +11,10 @@ from pathlib import Path
 
 # Constants
 # ---------------------------------------------------------------------------
-# Determine the project root (four levels up from 'ml_model.py')
-BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+# Determine the project root (three levels up from 'ml_model.py')
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 _H5_PATH = BASE_DIR / "model.h5"
+
 
 
 _PKL_PATH = None  # No metadata pkl for this model
