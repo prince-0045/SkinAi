@@ -17,5 +17,5 @@ scikit-learn
 opencv-python-headless
 cloudinary
 
-tensorflow
+tensorflow-cpu
 boto3
