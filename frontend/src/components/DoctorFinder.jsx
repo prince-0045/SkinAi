@@ -25,7 +25,8 @@ export default function DoctorFinder({ initialCoords }) {
                 lng = position.coords.longitude;
             }
 
-            const response = await fetch('http://localhost:8000/api/v1/doctors/nearby', {
+            const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+            const response = await fetch(`${API_BASE_URL}/api/v1/doctors/nearby`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

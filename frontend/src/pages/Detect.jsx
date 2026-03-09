@@ -46,8 +46,9 @@ export default function Detect() {
             const formData = new FormData();
             formData.append('file', file);
 
+            const API_BASE_URL = import.meta.env.VITE_API_URL || '';
             const token = localStorage.getItem('token');
-            const response = await fetch('/api/v1/scan/predict', {
+            const response = await fetch(`${API_BASE_URL}/api/v1/scan/predict`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

@@ -18,9 +18,10 @@ export default function Profile() {
             return;
         }
 
+        const API_BASE_URL = import.meta.env.VITE_API_URL || '';
         const fetchHistory = async () => {
             try {
-                const response = await fetch('http://localhost:8000/api/v1/scan/history', {
+                const response = await fetch(`${API_BASE_URL}/api/v1/scan/history`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming token is stored in localStorage
                     }
@@ -84,7 +85,8 @@ export default function Profile() {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/api/v1/users/change-password', {
+            const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+            const response = await fetch(`${API_BASE_URL}/api/v1/users/change-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

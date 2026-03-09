@@ -42,9 +42,11 @@ export const AuthProvider = ({ children }) => {
         initAuth();
     }, []);
 
+    const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+
     const login = async (email, password) => {
         try {
-            const response = await fetch('/api/v1/auth/login', {
+            const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -69,7 +71,7 @@ export const AuthProvider = ({ children }) => {
 
     const signup = async (name, email, password) => {
         try {
-            const response = await fetch('/api/v1/auth/signup', {
+            const response = await fetch(`${API_BASE_URL}/api/v1/auth/signup`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, password }),
@@ -98,7 +100,7 @@ export const AuthProvider = ({ children }) => {
 
     const verifyOtp = async (email, otp) => {
         try {
-            const response = await fetch('/api/v1/auth/verify-otp', {
+            const response = await fetch(`${API_BASE_URL}/api/v1/auth/verify-otp`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, otp }),
@@ -117,7 +119,7 @@ export const AuthProvider = ({ children }) => {
 
     const googleLogin = async (token) => {
         try {
-            const response = await fetch('/api/v1/auth/google', {
+            const response = await fetch(`${API_BASE_URL}/api/v1/auth/google`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ token }),

@@ -13,8 +13,9 @@ export default function Tracker() {
     useEffect(() => {
         const fetchHistory = async () => {
             try {
+                const API_BASE_URL = import.meta.env.VITE_API_URL || '';
                 const token = localStorage.getItem('token');
-                const response = await fetch('/api/v1/scan/history', {
+                const response = await fetch(`${API_BASE_URL}/api/v1/scan/history`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

@@ -19,8 +19,15 @@ origins = [
     "http://127.0.0.1:5173",
     "http://localhost:8000",
     "http://10.99.173.187:5173", # Local Network Access
-    getattr(settings, "FRONTEND_URL", "http://localhost:5173"),
 ]
+
+# Add production frontend URL if configured
+if hasattr(settings, "FRONTEND_URL") and settings.FRONTEND_URL:
+    origins.append(settings.FRONTEND_URL)
+    # Also add the URL without trailing slash if present
+    if settings.FRONTEND_URL.endswith('/'):
+        origins.append(settings.FRONTEND_URL[:-1])
+
 
 app.add_middleware(
     CORSMiddleware,
