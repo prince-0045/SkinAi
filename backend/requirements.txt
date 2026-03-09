@@ -9,9 +9,11 @@ python-jose[cryptography]
 passlib[bcrypt]
 argon2-cffi
 fastapi-mail
+email-validator
 google-auth
 requests
 httpx
+certifi
 pillow
 numpy
 scikit-learn
@@ -19,4 +21,5 @@ opencv-python-headless
 cloudinary
 
 tensorflow-cpu
+tf-keras
 boto3
