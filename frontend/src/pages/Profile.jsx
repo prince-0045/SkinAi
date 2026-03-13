@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../context/AuthContext';
-import { User, Shield, Phone, Mail, LogOut, Clock, Calendar, CheckCircle, X } from 'lucide-react';
+import { User, Shield, Phone, Mail, LogOut, Clock, Calendar, CheckCircle, X, Download } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { downloadMedicalReport } from '../utils/pdfGenerator';
 
 export default function Profile() {
     const { user, logout } = useAuth();
@@ -29,9 +30,9 @@ export default function Profile() {
 
                 if (response.ok) {
                     const data = await response.json();
-                    // Transform backend data to frontend format
+                    // Keep full data for PDF generation
                     const formattedHistory = data.map(item => ({
-                        id: item.id,
+                        ...item,
                         date: new Date(item.created_at).toISOString().split('T')[0],
                         type: 'Scan',
                         result: item.disease_detected,
@@ -181,9 +182,18 @@ export default function Profile() {
                                                     <p className="text-sm text-gray-500">{item.type} • {item.date}</p>
                                                 </div>
                                             </div>
-                                            <span className="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-600">
-                                                {item.status}
-                                            </span>
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => downloadMedicalReport(item, user)}
+                                                    className="p-2 text-medical-600 hover:bg-medical-50 rounded-lg transition"
+                                                    title="Download Report"
+                                                >
+                                                    <Download className="w-4 h-4" />
+                                                </button>
+                                                <span className="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-600">
+                                                    {item.status}
+                                                </span>
+                                            </div>
                                         </div>
                                     ))
                                 ) : (

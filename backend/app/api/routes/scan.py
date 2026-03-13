@@ -45,10 +45,25 @@ async def predict_disease(
             severity_level=prediction["severity"],
             description=prediction["description"],
             recommendation=prediction["recommendation"],
+            do_list=prediction.get("do_list", []),
+            dont_list=prediction.get("dont_list", []),
         )
         await db.save(scan)
 
-        return scan
+        # Return explicit dict (odmantic .dict() can have serialization quirks)
+        return {
+            "id": str(scan.id),
+            "user_id": scan.user_id,
+            "image_url": scan.image_url,
+            "disease_detected": scan.disease_detected,
+            "confidence_score": scan.confidence_score,
+            "severity_level": scan.severity_level,
+            "description": scan.description,
+            "recommendation": scan.recommendation,
+            "created_at": scan.created_at.isoformat() + "Z" if scan.created_at else None,
+            "do_list": prediction.get("do_list", []),
+            "dont_list": prediction.get("dont_list", [])
+        }
     except Exception as e:
         import traceback
         traceback.print_exc()
@@ -61,4 +76,19 @@ async def get_scan_history(
     db: AIOEngine = Depends(get_db)
 ):
     scans = await db.find(SkinScan, SkinScan.user_id == str(current_user.id), sort=SkinScan.created_at.desc())
-    return scans
+    return [
+        {
+            "id": str(scan.id),
+            "user_id": scan.user_id,
+            "image_url": scan.image_url,
+            "disease_detected": scan.disease_detected,
+            "confidence_score": scan.confidence_score,
+            "severity_level": scan.severity_level,
+            "description": scan.description,
+            "recommendation": scan.recommendation,
+            "created_at": scan.created_at.isoformat() + "Z" if scan.created_at else None,
+            "do_list": scan.do_list or [],
+            "dont_list": scan.dont_list or []
+        }
+        for scan in scans
+    ]

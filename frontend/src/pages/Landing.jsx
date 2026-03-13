@@ -5,6 +5,7 @@ import FeatureCarousel from '../components/landing/FeatureCarousel';
 // import Testimonials from '../components/landing/Testimonials'; // To be created
 import { motion } from 'framer-motion';
 import { Activity, Clock, Shield, Upload } from 'lucide-react';
+import DNAHelix from '../components/animations/DNAHelix';
 
 const FeatureCard = ({ icon: Icon, title, description, delay }) => (
     <motion.div
@@ -34,8 +35,11 @@ export default function Landing() {
             <FeatureCarousel />
 
             {/* Features Section - Inline for now or separate later */}
-            <section className="py-24 bg-white dark:bg-slate-900 transition-colors duration-300">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section className="relative py-24 bg-white dark:bg-slate-900 transition-colors duration-300 overflow-hidden">
+                <div className="absolute -left-20 top-0 opacity-10 pointer-events-none">
+                    <DNAHelix className="w-[600px] h-[600px] text-medical-600 dark:text-medical-400" />
+                </div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">Why Choose SkinAi?</h2>
                         <p className="mt-4 text-lg text-gray-500">Comprehensive dermatological analysis at your fingertips</p>
@@ -70,28 +74,7 @@ export default function Landing() {
                 </div>
             </section>
 
-            {/* Testimonials or Stats */}
-            <section className="py-24 bg-medical-900 text-white overflow-hidden relative">
-                {/* Decorative Circles */}
-                <div className="absolute top-0 left-0 w-64 h-64 bg-medical-800 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 opacity-50"></div>
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                        <div className="p-4">
-                            <div className="text-4xl font-bold text-medical-300 mb-2">98%</div>
-                            <div className="text-medical-100">Detection Accuracy</div>
-                        </div>
-                        <div className="p-4">
-                            <div className="text-4xl font-bold text-medical-300 mb-2">10k+</div>
-                            <div className="text-medical-100">Scans Performed</div>
-                        </div>
-                        <div className="p-4">
-                            <div className="text-4xl font-bold text-medical-300 mb-2">24/7</div>
-                            <div className="text-medical-100">Peace of Mind</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
         </div>
     );
 }

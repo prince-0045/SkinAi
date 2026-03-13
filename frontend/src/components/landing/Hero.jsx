@@ -2,14 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import DNAHelix from '../animations/DNAHelix';
 
 export default function Hero() {
     return (
         <div className="relative overflow-hidden bg-gradient-to-b from-medical-50 to-white dark:from-slate-900 dark:to-slate-800 transition-colors duration-300 pt-16 pb-32">
             {/* Abstract Background Shapes */}
-            <div className="absolute top-0 right-0 -translate-y-12 translate-x-12 opacity-10">
-                <DNAHelix className="w-96 h-96" />
+            <div className="absolute top-0 right-0 -translate-y-12 translate-x-12 opacity-20">
+                <DNAHelix className="w-96 h-96 text-medical-600 dark:text-medical-400" />
             </div>
 
             <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
@@ -50,7 +51,7 @@ export default function Hero() {
                             </div>
                             <p className="mt-4 text-sm text-gray-400 flex items-center gap-2 sm:justify-center lg:justify-start">
                                 <Activity className="w-4 h-4" />
-                                Clinical-grade accuracy • Privacy first
+                                Smart Analysis • Privacy first
                             </p>
                         </div>
                     </motion.div>
@@ -64,11 +65,14 @@ export default function Hero() {
                     >
                         <div className="relative mx-auto w-full rounded-lg lg:max-w-md">
                             <div className="relative block w-full bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-medical-50 dark:border-slate-700">
-                                <img
-                                    src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80"
-                                    alt="Medical Analysis"
-                                    className="w-full h-full object-cover opacity-90"
-                                />
+                                <div className="p-4 bg-medical-50/50 dark:bg-medical-900/20">
+                                    <DotLottieReact
+                                        src="https://lottie.host/f9b3efac-b6c1-45bf-8659-5e24b6a86ba1/0sBZw8sOdg.lottie"
+                                        loop
+                                        autoplay
+                                        className="w-full h-full"
+                                    />
+                                </div>
                                 {/* Floating Cards Overlays */}
                                 <div className="absolute top-4 left-4 bg-white/90 backdrop-blur p-3 rounded-lg shadow-lg border border-medical-100 flex items-center gap-3">
                                     <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
@@ -76,7 +80,7 @@ export default function Hero() {
                                     </div>
                                     <div>
                                         <p className="text-xs text-gray-500">Confidence Score</p>
-                                        <p className="text-sm font-bold text-gray-900">98.5% Accuracy</p>
+                                        <p className="text-sm font-bold text-gray-900">Secure Analysis</p>
                                     </div>
                                 </div>
                             </div>

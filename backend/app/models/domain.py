@@ -1,6 +1,6 @@
 from odmantic import Model, Field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 class SkinScan(Model):
     user_id: str
@@ -10,6 +10,8 @@ class SkinScan(Model):
     severity_level: str
     description: Optional[str] = None
     recommendation: Optional[str] = None
+    do_list: Optional[List[str]] = None
+    dont_list: Optional[List[str]] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
     model_config = {

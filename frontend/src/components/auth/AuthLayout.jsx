@@ -8,18 +8,16 @@ export default function AuthLayout({ children, title, subtitle }) {
     return (
         <div className="min-h-screen flex bg-white dark:bg-slate-900 transition-colors duration-300">
             {/* Left Side - Form */}
-            <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 sm:px-12 md:px-24">
-                <Link to="/" className="absolute top-8 left-8 text-gray-500 hover:text-medical-600 transition-colors flex items-center">
-                    <ArrowLeft className="w-5 h-5 mr-1" /> Back to Home
-                </Link>
+            <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 sm:px-12 md:px-24 bg-white dark:bg-slate-900 relative">
 
                 <motion.div
+                    className="relative z-10 pt-32 lg:pt-24"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5 }}
                 >
                     <div className="mb-8">
-                        <div className="inline-flex items-center px-3 py-1 bg-medical-50 rounded-full text-medical-600 text-sm font-semibold mb-4">
+                        <div className="inline-flex items-center px-3 py-1 bg-medical-50 dark:bg-medical-900/30 rounded-full text-medical-600 dark:text-medical-400 text-sm font-semibold mb-4 border border-medical-100 dark:border-medical-800">
                             <ShieldCheck className="w-4 h-4 mr-2" />
                             Secure Medical Login
                         </div>
@@ -32,33 +30,35 @@ export default function AuthLayout({ children, title, subtitle }) {
             </div>
 
             {/* Right Side - Visual */}
-            <div className="hidden lg:flex w-1/2 bg-medical-50 relative overflow-hidden items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-medical-600 to-medical-900 opacity-90"></div>
+            <div className="hidden lg:flex w-1/2 bg-slate-950 relative overflow-hidden items-center justify-center p-12">
+                <div className="absolute inset-0 bg-gradient-to-br from-medical-900/40 to-slate-950 opacity-100"></div>
                 {/* Decorative DNA */}
                 <div className="absolute inset-0 opacity-20 transform scale-150 rotate-45 pointer-events-none">
                     <DNAHelix className="w-full h-full text-white" />
                 </div>
-
-                <motion.div
-                    className="relative z-10 text-white max-w-lg text-center p-12"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.8 }}
-                >
-                    <h3 className="text-3xl font-bold mb-4">Advanced AI for Your Skin</h3>
-                    <p className="text-medical-100 text-lg">Join thousands of users tracking their healing journey with clinical-grade precision.</p>
-
-                    <div className="mt-12 grid grid-cols-2 gap-6 text-left">
-                        <div className="bg-white/10 backdrop-blur p-4 rounded-xl border border-white/20">
-                            <div className="text-2xl font-bold mb-1">98%</div>
-                            <div className="text-sm text-medical-100">Accuracy Rate</div>
+                
+                <div className="relative z-10 w-full flex flex-col items-center">
+                    <motion.div 
+                        className="text-center bg-slate-900/50 backdrop-blur-md p-8 rounded-2xl border border-white/10"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                    >
+                        <h3 className="text-3xl font-bold text-white mb-4">Advanced AI Analysis</h3>
+                        <p className="text-gray-400 text-lg max-w-sm mx-auto">Join thousands of users tracking their healing journey with clinical-grade precision.</p>
+                        
+                        <div className="mt-8 grid grid-cols-2 gap-4 text-left">
+                            <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                                <div className="text-2xl font-bold text-white mb-1">98%</div>
+                                <div className="text-sm text-gray-400">Accuracy Rate</div>
+                            </div>
+                            <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                                <div className="text-2xl font-bold text-white mb-1">24/7</div>
+                                <div className="text-sm text-gray-400">Accessible Analysis</div>
+                            </div>
                         </div>
-                        <div className="bg-white/10 backdrop-blur p-4 rounded-xl border border-white/20">
-                            <div className="text-2xl font-bold mb-1">24/7</div>
-                            <div className="text-sm text-medical-100">Accessible Analysis</div>
-                        </div>
-                    </div>
-                </motion.div>
+                    </motion.div>
+                </div>
             </div>
         </div>
     );
