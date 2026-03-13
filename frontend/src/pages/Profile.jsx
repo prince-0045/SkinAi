@@ -231,11 +231,6 @@ export default function Profile() {
                         )}
                     </div>
                 </div>
-                {/* Debug Info */}
-                <div className="mt-8 p-4 bg-gray-100 rounded-lg overflow-auto">
-                    <p className="text-xs font-mono text-gray-500 mb-2">Debug Data (Developer Only):</p>
-                    <pre className="text-xs text-gray-700">{JSON.stringify(user, null, 2)}</pre>
-                </div>
 
                 {/* Change Password Modal */}
                 {isChangePasswordOpen && (

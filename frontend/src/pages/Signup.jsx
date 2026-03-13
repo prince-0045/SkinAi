@@ -52,10 +52,6 @@ export default function Signup() {
             setLoading(false);
 
             if (res.success) {
-                if (res.otpDebug) {
-                    console.log("DEBUG: OTP received in response:", res.otpDebug);
-                    alert("Developer Mode: OTP is " + res.otpDebug);
-                }
                 navigate('/otp', { state: { email, type: 'signup' } });
             } else {
                 console.warn("Signup Rejected:", res.error);
