@@ -19,6 +19,17 @@ async def predict_disease(
     db: AIOEngine = Depends(get_db)
 ):
     try:
+        from datetime import datetime
+        
+        # Check daily upload limit
+        today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        daily_scans_count = await db.count(
+            SkinScan, 
+            (SkinScan.user_id == str(current_user.id)) & (SkinScan.created_at >= today_start)
+        )
+        if daily_scans_count >= 5:
+            raise HTTPException(status_code=429, detail="Daily upload limit reached (5 scans max per day). Please try again tomorrow.")
+
         # Read the uploaded image bytes
         image_bytes = await file.read()
 
@@ -64,6 +75,8 @@ async def predict_disease(
             "do_list": prediction.get("do_list", []),
             "dont_list": prediction.get("dont_list", [])
         }
+    except HTTPException:
+        raise
     except Exception as e:
         import traceback
         traceback.print_exc()

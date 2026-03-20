@@ -74,7 +74,8 @@ export default function Detect() {
                     dontList:       data.dont_list || [],
                 });
             } else {
-                alert('Analysis failed. Please try again.');
+                const errorData = await response.json().catch(() => null);
+                alert(errorData?.detail || 'Analysis failed. Please try again.');
             }
         } catch (error) {
             console.error('Error analyzing image:', error);
