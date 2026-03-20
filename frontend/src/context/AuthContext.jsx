@@ -9,11 +9,11 @@ const isTokenExpired = (token) => {
     try {
         const parts = token.split('.');
         if (parts.length !== 3) return false; // If it's a simple email (bypass remnant), it's not a real JWT
-        
+
         const decoded = JSON.parse(atob(parts[1]));
         const exp = decoded.exp;
         if (!exp) return false;
-        
+
         const currentTime = Math.floor(Date.now() / 1000);
         return exp < currentTime;
     } catch (error) {

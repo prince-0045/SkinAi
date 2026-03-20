@@ -23,10 +23,15 @@ async def predict_disease(
         
         # Check daily upload limit
         today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
-        daily_scans_count = await db.count(
-            SkinScan, 
-            (SkinScan.user_id == str(current_user.id)) & (SkinScan.created_at >= today_start)
-        )
+        try:
+            daily_scans_count = await db.count(
+                SkinScan, 
+                (SkinScan.user_id == str(current_user.id)) & (SkinScan.created_at >= today_start)
+            )
+        except Exception:
+            # If database is unreachable, bypass the check so we can still upload to Cloudinary
+            daily_scans_count = 0
+            
         if daily_scans_count >= 5:
             raise HTTPException(status_code=429, detail="Daily upload limit reached (5 scans max per day). Please try again tomorrow.")
 
@@ -105,3 +110,21 @@ async def get_scan_history(
         }
         for scan in scans
     ]
+
+@router.get("/limit")
+async def get_upload_limit(
+    current_user: User = Depends(get_current_user),
+    db: AIOEngine = Depends(get_db)
+):
+    try:
+        from datetime import datetime
+        today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        daily_scans_count = await db.count(
+            SkinScan, 
+            (SkinScan.user_id == str(current_user.id)) & (SkinScan.created_at >= today_start)
+        )
+    except Exception:
+        daily_scans_count = 0
+        
+    remaining = max(0, 5 - daily_scans_count)
+    return { "remaining": remaining, "limit": 5 }

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, X, AlertCircle, FileText, CheckCircle, ShieldAlert, ThumbsUp, ThumbsDown, Info } from 'lucide-react';
@@ -20,6 +20,28 @@ export default function Detect() {
     const [preview, setPreview]     = useState(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [result, setResult]       = useState(null);
+    const [error, setError]         = useState(null);
+    const [uploadLimit, setUploadLimit] = useState(null);
+
+    useEffect(() => {
+        const fetchLimit = async () => {
+            try {
+                const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE_URL}/api/v1/scan/limit`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setUploadLimit(data);
+                }
+            } catch (err) {
+                console.error('Failed to fetch limit:', err);
+            }
+        };
+        // Re-fetch limit on initial load and whenever an analysis officially completes (result changes)
+        fetchLimit();
+    }, [result]);
 
     const onDrop = useCallback(acceptedFiles => {
         const selectedFile = acceptedFiles[0];
@@ -40,6 +62,7 @@ export default function Detect() {
         setFile(null);
         setPreview(null);
         setResult(null);
+        setError(null);
         setIsAnalyzing(false);
     };
 
@@ -49,6 +72,7 @@ export default function Detect() {
         if (!file) return;
         setIsAnalyzing(true);
         setResult(null);
+        setError(null);
 
         try {
             const formData = new FormData();
@@ -75,11 +99,11 @@ export default function Detect() {
                 });
             } else {
                 const errorData = await response.json().catch(() => null);
-                alert(errorData?.detail || 'Analysis failed. Please try again.');
+                setError(errorData?.detail || 'Analysis failed. Please try again.');
             }
-        } catch (error) {
-            console.error('Error analyzing image:', error);
-            alert('Error connecting to server.');
+        } catch (err) {
+            console.error('Error analyzing image:', err);
+            setError('Error connecting to server.');
         } finally {
             setIsAnalyzing(false);
         }
@@ -114,6 +138,12 @@ export default function Detect() {
                                 </div>
                                 <p className="text-lg font-medium text-gray-900 dark:text-gray-200">Click to upload or drag &amp; drop</p>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">SVG, PNG, JPG or GIF (max. 5MB)</p>
+                                {uploadLimit && (
+                                    <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-100 dark:border-blue-800/50">
+                                        <Info className="w-4 h-4" />
+                                        <span>{uploadLimit.remaining} of {uploadLimit.limit} daily uploads remaining (resets in 24h)</span>
+                                    </div>
+                                )}
                             </div>
                         ) : (
                             <div className="relative h-80 bg-black rounded-xl overflow-hidden flex items-center justify-center mb-4">
@@ -131,6 +161,16 @@ export default function Detect() {
                                         <ScanningLoader />
                                     </div>
                                 )}
+                            </div>
+                        )}
+
+                        {error && (
+                            <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-start gap-3">
+                                <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                                <div>
+                                    <h3 className="text-sm font-semibold text-red-900 dark:text-red-300">Upload Limit Reached</h3>
+                                    <p className="text-sm text-red-700 dark:text-red-200 mt-1">{error}</p>
+                                </div>
                             </div>
                         )}
 
