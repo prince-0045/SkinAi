@@ -68,6 +68,32 @@ export default function Detect() {
 
     const { user } = useAuth();
 
+    // #2: Compress image before upload — shrinks 5MB photos to ~100-200KB
+    const compressImage = (imageFile, maxSize = 800, quality = 0.8) => {
+        return new Promise((resolve) => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new window.Image();
+            img.onload = () => {
+                let { width, height } = img;
+                if (width > maxSize || height > maxSize) {
+                    const ratio = Math.min(maxSize / width, maxSize / height);
+                    width = Math.round(width * ratio);
+                    height = Math.round(height * ratio);
+                }
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                canvas.toBlob(
+                    (blob) => resolve(new File([blob], imageFile.name, { type: 'image/jpeg' })),
+                    'image/jpeg',
+                    quality
+                );
+            };
+            img.src = URL.createObjectURL(imageFile);
+        });
+    };
+
     const handleAnalyze = async () => {
         if (!file) return;
         setIsAnalyzing(true);
@@ -75,8 +101,11 @@ export default function Detect() {
         setError(null);
 
         try {
+            // Compress image before sending
+            const compressedFile = await compressImage(file);
+
             const formData = new FormData();
-            formData.append('file', file);
+            formData.append('file', compressedFile);
 
             const API_BASE_URL = import.meta.env.VITE_API_URL || '';
             const token = localStorage.getItem('token');

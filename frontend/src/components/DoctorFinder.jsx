@@ -1,133 +1,77 @@
 import React, { useState } from 'react';
-import { MapPin, Star, Navigation, Phone, ExternalLink, Loader } from 'lucide-react';
+import { MapPin, Navigation, ExternalLink, Loader } from 'lucide-react';
 
-export default function DoctorFinder({ initialCoords }) {
-    const [doctors, setDoctors] = useState([]);
+export default function DoctorFinder() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [searched, setSearched] = useState(false);
 
-    const findDoctors = async () => {
+    const openGoogleMaps = async () => {
         setLoading(true);
         setError(null);
         try {
-            // Use browser geolocation if initialCoords not provided
-            let lat, lng;
-
-            if (initialCoords) {
-                lat = initialCoords.latitude;
-                lng = initialCoords.longitude;
-            } else {
-                const position = await new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(resolve, reject);
+            const position = await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                    enableHighAccuracy: false,
+                    timeout: 5000,
+                    maximumAge: 300000
                 });
-                lat = position.coords.latitude;
-                lng = position.coords.longitude;
-            }
-
-            const API_BASE_URL = import.meta.env.VITE_API_URL || '';
-            const response = await fetch(`${API_BASE_URL}/api/v1/doctors/nearby`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify({ latitude: lat, longitude: lng })
             });
-
-            if (!response.ok) throw new Error('Failed to fetch doctors');
-
-            const data = await response.json();
-            setDoctors(data);
-            setSearched(true);
+            const { latitude, longitude } = position.coords;
+            const url = `https://www.google.com/maps/search/dermatologist/@${latitude},${longitude},14z`;
+            window.open(url, '_blank', 'noopener,noreferrer');
         } catch (err) {
-            console.error(err);
-            setError("Could not find doctors nearby. Please allow location access.");
+            // Geolocation blocked (HTTP / denied / timeout) — fall back to Google's own location
+            window.open('https://www.google.com/maps/search/dermatologist+near+me', '_blank', 'noopener,noreferrer');
         } finally {
             setLoading(false);
         }
     };
 
+    // Fallback: open without location
+    const openWithoutLocation = () => {
+        window.open('https://www.google.com/maps/search/dermatologist+near+me', '_blank', 'noopener,noreferrer');
+    };
+
     return (
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden mt-8 transition-colors duration-300">
-            <div className="p-6 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center bg-gray-50 dark:bg-slate-900/50">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden transition-colors duration-300">
+            <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
-                        <MapPin className="w-5 h-5 text-medical-600 mr-2" />
+                        <MapPin className="w-5 h-5 text-medical-600 dark:text-medical-400 mr-2" />
                         Find Dermatologists Nearby
                     </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Locate specialists in your area based on your current location.</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Opens Google Maps to show dermatologists near your location.
+                    </p>
                 </div>
-                {!searched && (
+                <div className="flex gap-2">
                     <button
-                        onClick={findDoctors}
+                        onClick={openGoogleMaps}
                         disabled={loading}
-                        className="bg-medical-600 hover:bg-medical-700 text-white px-4 py-2 rounded-lg font-medium transition flex items-center disabled:opacity-50"
+                        className="bg-medical-600 hover:bg-medical-700 text-white px-4 py-2.5 rounded-lg font-medium transition flex items-center disabled:opacity-50 whitespace-nowrap"
                     >
                         {loading ? <Loader className="w-4 h-4 mr-2 animate-spin" /> : <Navigation className="w-4 h-4 mr-2" />}
-                        {loading ? 'Searching...' : 'Find Near Me'}
+                        {loading ? 'Getting Location...' : 'Find Near Me'}
                     </button>
-                )}
+                    <button
+                        onClick={openWithoutLocation}
+                        className="px-3 py-2.5 border border-gray-200 dark:border-slate-600 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition flex items-center text-sm"
+                        title="Search without location"
+                    >
+                        <ExternalLink className="w-4 h-4" />
+                    </button>
+                </div>
             </div>
 
             {error && (
-                <div className="p-4 bg-red-50 text-red-700 text-sm border-b border-red-100">
-                    {error}
-                </div>
-            )}
-
-            {searched && (
-                <div className="divide-y divide-gray-100">
-                    {doctors.length === 0 ? (
-                        <div className="p-8 text-center text-gray-500">
-                            No dermatologists found nearby.
-                        </div>
-                    ) : (
-                        doctors.map((doc, index) => (
-                            <div key={index} className="p-4 hover:bg-gray-50 transition flex flex-col sm:flex-row sm:items-center justify-between">
-                                <div className="mb-4 sm:mb-0">
-                                    <h4 className="font-semibold text-gray-900 dark:text-white">{doc.name}</h4>
-                                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                        <MapPin className="w-3 h-3 mr-1" />
-                                        <span>{doc.address}</span>
-                                    </div>
-                                    <div className="flex items-center text-sm mt-2">
-                                        {doc.rating && (
-                                            <div className="flex items-center bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded mr-3">
-                                                <Star className="w-3 h-3 fill-current mr-1" />
-                                                <span className="font-medium">{doc.rating}</span>
-                                                <span className="text-xs text-yellow-600 ml-1">({doc.user_ratings_total})</span>
-                                            </div>
-                                        )}
-                                        {doc.open_now !== null && doc.open_now !== undefined && (
-                                            <span className={`text-xs font-medium px-2 py-0.5 rounded ${doc.open_now ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50'}`}>
-                                                {doc.open_now ? 'Open Now' : 'Closed'}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="flex space-x-3">
-                                    <a
-                                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(doc.name + ' ' + doc.address)}&query_place_id=${doc.place_id}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center px-3 py-2 border border-gray-200 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-white dark:hover:bg-slate-700 hover:border-medical-300 hover:text-medical-600 transition text-sm font-medium"
-                                    >
-                                        <ExternalLink className="w-4 h-4 mr-2" />
-                                        Directions
-                                    </a>
-                                </div>
-                            </div>
-                        ))
-                    )}
-
-                    <div className="p-4 bg-gray-50 text-center border-t border-gray-100">
+                <div className="px-6 pb-4">
+                    <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 text-sm rounded-lg border border-red-200 dark:border-red-800 flex justify-between items-center">
+                        <span>{error}</span>
                         <button
-                            onClick={findDoctors}
-                            disabled={loading}
-                            className="text-medical-600 text-sm font-medium hover:underline"
+                            onClick={openWithoutLocation}
+                            className="text-red-600 dark:text-red-300 underline text-xs ml-3 whitespace-nowrap"
                         >
-                            Refresh Location
+                            Search anyway →
                         </button>
                     </div>
                 </div>

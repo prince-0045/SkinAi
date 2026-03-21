@@ -31,11 +31,7 @@ export const AuthProvider = ({ children }) => {
             const storedUser = localStorage.getItem('user');
 
             if (token && storedUser) {
-                if (isTokenExpired(token)) {
-                    logout();
-                } else {
-                    setUser(JSON.parse(storedUser));
-                }
+                setUser(JSON.parse(storedUser));
             }
             setLoading(false);
         };
