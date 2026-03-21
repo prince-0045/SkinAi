@@ -3,28 +3,28 @@ import { motion } from 'framer-motion';
 
 export default function ScanningLoader() {
     return (
-        <div className="relative w-full h-64 bg-gray-900 rounded-lg overflow-hidden flex items-center justify-center">
-            {/* Grid Background */}
-            <div className="absolute inset-0 opacity-20"
-                style={{ backgroundImage: 'linear-gradient(#0ea5e9 1px, transparent 1px), linear-gradient(90deg, #0ea5e9 1px, transparent 1px)', backgroundSize: '40px 40px' }}
-            />
-
-            {/* Scanning Line */}
+        <div className="absolute inset-0 flex flex-col items-center justify-end overflow-hidden">
+            {/* Scanning Line — sweeps top to bottom continuously */}
             <motion.div
-                className="absolute w-full h-1 bg-medical-400 shadow-[0_0_20px_rgba(56,189,248,0.8)] z-10"
-                animate={{ top: ['0%', '100%'], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                className="absolute left-0 w-full h-0.5 z-10"
+                style={{
+                    background: 'linear-gradient(90deg, transparent 0%, #38bdf8 20%, #0ea5e9 50%, #38bdf8 80%, transparent 100%)',
+                    boxShadow: '0 0 18px 4px rgba(14,165,233,0.6), 0 0 60px 8px rgba(14,165,233,0.25)',
+                }}
+                animate={{ top: ['-2%', '102%'] }}
+                transition={{ duration: 2.2, repeat: Infinity, ease: 'linear' }}
             />
 
-            {/* Central Medical Icon */}
-            <div className="relative z-0 text-medical-500 animate-pulse">
-                <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                </svg>
-            </div>
+            {/* Subtle full-area tint so text is readable */}
+            <div className="absolute inset-0 bg-black/30 pointer-events-none" />
 
-            <div className="absolute bottom-4 left-0 right-0 text-center text-medical-300 font-mono text-sm">
-                <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
+            {/* Analyzing text at the bottom */}
+            <div className="relative z-20 mb-6 text-center">
+                <motion.span
+                    className="text-cyan-300 font-mono text-sm tracking-widest drop-shadow-[0_0_6px_rgba(56,189,248,0.7)]"
+                    animate={{ opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                >
                     ANALYZING SKIN TEXTURE...
                 </motion.span>
             </div>
