@@ -4,6 +4,24 @@ import { motion } from 'framer-motion';
 import { Calendar, Activity, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
+// ── Skeleton component for loading state ──
+const ScanCardSkeleton = () => (
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden animate-pulse">
+        <div className="aspect-video bg-gray-200 dark:bg-slate-700" />
+        <div className="p-5 space-y-3">
+            <div className="h-5 bg-gray-200 dark:bg-slate-700 rounded w-3/4" />
+            <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-1/2" />
+            <div className="border-t border-gray-100 dark:border-slate-700 pt-3 mt-3 space-y-2">
+                <div className="flex justify-between">
+                    <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-1/3" />
+                    <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-1/6" />
+                </div>
+                <div className="h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full w-full" />
+            </div>
+        </div>
+    </div>
+);
+
 export default function Tracker() {
     const { user } = useAuth();
     const [history, setHistory] = useState([]);
@@ -25,7 +43,6 @@ export default function Tracker() {
                     const data = await response.json();
                     setHistory(data);
                 } else {
-                    console.error("Failed to fetch history");
                     setError("Failed to load history");
                 }
             } catch (err) {
@@ -63,18 +80,20 @@ export default function Tracker() {
                 </div>
 
                 {loading ? (
-                    <div className="flex justify-center items-center h-64">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-medical-600"></div>
+                    /* ── Skeleton loading grid ── */
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[...Array(6)].map((_, i) => <ScanCardSkeleton key={i} />)}
                     </div>
                 ) : error ? (
-                    <div className="bg-red-50 p-4 rounded-lg text-red-700 text-center">
+                    <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg text-red-700 dark:text-red-300 text-center border border-red-200 dark:border-red-800">
+                        <AlertCircle className="w-5 h-5 inline mr-2" />
                         {error}
                     </div>
                 ) : history.length === 0 ? (
-                    <div className="text-center py-12 bg-white rounded-2xl shadow-sm border border-gray-100">
-                        <Activity className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900">No scans yet</h3>
-                        <p className="text-gray-500 mt-2">Upload your first image to get started.</p>
+                    <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
+                        <Activity className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-white">No scans yet</h3>
+                        <p className="text-gray-500 dark:text-gray-400 mt-2">Upload your first image to get started.</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -86,11 +105,12 @@ export default function Tracker() {
                                 transition={{ delay: index * 0.1 }}
                                 className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden hover:shadow-md transition-shadow"
                             >
-                                <div className="aspect-video relative overflow-hidden bg-gray-100 group">
+                                <div className="aspect-video relative overflow-hidden bg-gray-100 dark:bg-slate-700 group">
                                     <img
                                         src={scan.image_url}
                                         alt={`Scan ${index + 1}`}
                                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                        loading="lazy"
                                     />
                                     <div className="absolute top-2 right-2">
                                         <span className={`px-2 py-1 rounded-full text-xs font-semibold shadow-sm
@@ -112,14 +132,14 @@ export default function Tracker() {
                                         </div>
                                     </div>
 
-                                    <div className="border-t border-gray-100 pt-3 mt-3">
+                                    <div className="border-t border-gray-100 dark:border-slate-700 pt-3 mt-3">
                                         <div className="flex justify-between items-center text-sm">
-                                            <span className="text-gray-600">AI Confidence</span>
+                                            <span className="text-gray-600 dark:text-gray-400">AI Confidence</span>
                                             <span className="font-semibold text-medical-600">
                                                 {(scan.confidence_score * 100).toFixed(1)}%
                                             </span>
                                         </div>
-                                        <div className="w-full bg-gray-100 rounded-full h-1.5 mt-2">
+                                        <div className="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-1.5 mt-2">
                                             <div
                                                 className="bg-medical-600 h-1.5 rounded-full"
                                                 style={{ width: `${scan.confidence_score * 100}%` }}

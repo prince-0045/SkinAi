@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 // Pages
 import Landing from './pages/Landing';
@@ -13,6 +14,7 @@ import Detect from './pages/Detect';
 import Tracker from './pages/Tracker';
 import Profile from './pages/Profile';
 import Doctors from './pages/Doctors';
+import Privacy from './pages/Privacy';
 import { useAuth } from './context/AuthContext';
 
 const ProtectedRoute = ({ children }) => {
@@ -42,56 +44,30 @@ const PublicRoute = ({ children }) => {
 
 function App() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<Landing />} />
+    <ErrorBoundary>
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Landing />} />
 
-          {/* Public Routes (only accessible if NOT logged in) */}
-          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-          <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
-          <Route path="/otp" element={<PublicRoute><OTP /></PublicRoute>} />
+            {/* Public Routes */}
+            <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+            <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+            <Route path="/otp" element={<PublicRoute><OTP /></PublicRoute>} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/privacy" element={<Privacy />} />
 
-          <Route path="/success" element={<Success />} />
-
-          {/* Protected Routes */}
-          <Route
-            path="/detect"
-            element={
-              <ProtectedRoute>
-                <Detect />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/track"
-            element={
-              <ProtectedRoute>
-                <Tracker />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/doctors"
-            element={
-              <ProtectedRoute>
-                <Doctors />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+            {/* Protected Routes */}
+            <Route path="/detect" element={<ProtectedRoute><Detect /></ProtectedRoute>} />
+            <Route path="/track" element={<ProtectedRoute><Tracker /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/doctors" element={<ProtectedRoute><Doctors /></ProtectedRoute>} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </ErrorBoundary>
   );
 }
 

@@ -5,18 +5,39 @@ from app.core.auth import get_password_hash, verify_password, create_access_toke
 from app.core.database import get_db
 from app.services.email import send_otp_email, send_welcome_email
 from app.core.config import settings
+from app.core.constants import (
+    OTP_EXPIRY_MINUTES, LOGIN_MAX_ATTEMPTS, LOGIN_LOCKOUT_SECONDS,
+    PASSWORD_MIN_LENGTH
+)
 from odmantic import AIOEngine
 from datetime import datetime, timedelta
+from collections import defaultdict
 import random
 import string
-from google.oauth2 import id_token
-from google.auth.transport import requests
+import re
+import time
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+# ── Brute force protection (in-memory tracker) ──
+_login_attempts = defaultdict(list)
 
 
 def generate_otp():
     return "".join(random.choices(string.digits, k=6))
+
+
+def validate_password(password: str):
+    """Enforce password strength requirements."""
+    if len(password) < PASSWORD_MIN_LENGTH:
+        raise HTTPException(400, f"Password must be at least {PASSWORD_MIN_LENGTH} characters")
+    if not re.search(r'[A-Z]', password):
+        raise HTTPException(400, "Password must contain at least one uppercase letter")
+    if not re.search(r'[0-9]', password):
+        raise HTTPException(400, "Password must contain at least one number")
 
 
 @router.post("/signup", status_code=status.HTTP_201_CREATED)
@@ -26,6 +47,9 @@ async def signup(
     password: str = Body(...),
     db: AIOEngine = Depends(get_db),
 ):
+    # Validate password strength
+    validate_password(password)
+
     # Check if user exists
     existing_user = await db.find_one(User, User.email == email)
     if existing_user:
@@ -35,39 +59,32 @@ async def signup(
                 detail="Email already registered",
             )
         else:
-            # User exists but failed verification previously. Delete to allow retry.
             await db.delete(existing_user)
 
     try:
         hashed_password = get_password_hash(password)
     except Exception as e:
-        print(f"DEBUG: Hashing Failed: {e}")
-        import traceback
+        logger.error(f"Password hashing failed: {e}")
+        raise HTTPException(status_code=500, detail="Account creation failed. Please try again.")
 
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Hashing Error: {str(e)}")
-
-    # Generate OTP first
+    # Generate OTP
     otp = generate_otp()
     otp_log = OTPLog(
-        email=email, otp=otp, expires_at=datetime.utcnow() + timedelta(minutes=10)
+        email=email, otp=otp, expires_at=datetime.utcnow() + timedelta(minutes=OTP_EXPIRY_MINUTES)
     )
     await db.save(otp_log)
 
-    # Send OTP email before creating user
+    # Send OTP email
     email_sent = False
     import asyncio
 
     try:
-        # Enforce a short 5-second timeout for email sending in dev
-        print(f"DEBUG: sending email to {email}")
         await asyncio.wait_for(send_otp_email(email, otp), timeout=15.0)
         email_sent = True
     except Exception as e:
-        print(f"Failed to send email (timeout or error): {e}")
-        # Continue to return OTP in debug/fallback mode
+        logger.warning(f"OTP email failed for {email}: {e}")
 
-    # Create user only after OTP is successfully sent
+    # Create user
     new_user = User(
         name=name,
         email=email,
@@ -78,10 +95,10 @@ async def signup(
     await db.save(new_user)
 
     response = {"message": "User created. Please verify your email."}
-    # Always send OTP in response for testing if email fails
     if not email_sent:
-        response["otp_debug"] = otp
-        print(f"DEBUG: Returning OTP in response: {otp}")
+        # Never expose OTP in response — log server-side only
+        logger.warning(f"OTP delivery failed for {email}, OTP: {otp}")
+        response["message"] = "User created. Email delivery may be delayed — please check your inbox or try again."
 
     return response
 
@@ -90,8 +107,20 @@ async def signup(
 async def login(
     email: str = Body(...), password: str = Body(...), db: AIOEngine = Depends(get_db)
 ):
+    # ── Brute force protection ──
+    now = time.time()
+    recent = [t for t in _login_attempts[email] if now - t < LOGIN_LOCKOUT_SECONDS]
+    _login_attempts[email] = recent
+
+    if len(recent) >= LOGIN_MAX_ATTEMPTS:
+        raise HTTPException(
+            status_code=429,
+            detail=f"Too many login attempts. Please try again in {LOGIN_LOCKOUT_SECONDS // 60} minutes."
+        )
+
     user = await db.find_one(User, User.email == email)
     if not user:
+        _login_attempts[email].append(now)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
         )
@@ -102,6 +131,7 @@ async def login(
         )
 
     if not verify_password(password, user.hashed_password):
+        _login_attempts[email].append(now)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
         )
@@ -110,6 +140,9 @@ async def login(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Email not verified"
         )
+
+    # Clear failed attempts on success
+    _login_attempts.pop(email, None)
 
     access_token = create_access_token(data={"sub": user.email})
 
@@ -132,13 +165,14 @@ async def google_login(
     token: str = Body(..., embed=True), db: AIOEngine = Depends(get_db)
 ):
     try:
-        # Verify the access token by fetching user info
-        import requests
+        # Use httpx (async) instead of synchronous requests
+        import httpx
 
-        response = requests.get(
-            "https://www.googleapis.com/oauth2/v3/userinfo",
-            headers={"Authorization": f"Bearer {token}"},
-        )
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                "https://www.googleapis.com/oauth2/v3/userinfo",
+                headers={"Authorization": f"Bearer {token}"},
+            )
 
         if response.status_code != 200:
             raise HTTPException(
@@ -161,22 +195,19 @@ async def google_login(
         user = await db.find_one(User, User.email == email)
 
         if not user:
-            # Create new user
             user = User(
                 name=name,
                 email=email,
-                is_verified=True,  # Google emails are verified
+                is_verified=True,
                 auth_provider="google",
             )
             await db.save(user)
             try:
                 await send_welcome_email(user.email, user.name)
             except Exception as e:
-                print(f"Failed to send welcome email: {e}")
+                logger.warning(f"Welcome email failed: {e}")
         elif user.auth_provider != "google":
-            # Link account or warn? For now, we'll just allow it but maybe update provider or keep as is.
-            # Ideally we should merge or handle gracefully. Let's just log them in.
-            pass
+            pass  # Allow cross-provider login
 
         access_token = create_access_token(data={"sub": user.email})
 
@@ -193,8 +224,10 @@ async def google_login(
             },
         }
 
+    except HTTPException:
+        raise
     except Exception as e:
-        print(f"Google Login Error: {e}")
+        logger.error(f"Google login error: {e}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Google Login Failed: {str(e)}",
@@ -226,6 +259,65 @@ async def verify_otp(
         try:
             await send_welcome_email(user.email, user.name)
         except Exception as e:
-            print(f"Failed to send welcome email: {e}")
+            logger.warning(f"Welcome email failed: {e}")
 
     return {"message": "Email verified successfully"}
+
+
+# ── Forgot Password Flow ──
+@router.post("/forgot-password")
+async def forgot_password(
+    email: str = Body(..., embed=True), db: AIOEngine = Depends(get_db)
+):
+    """Send a password reset OTP. Always returns success to prevent email enumeration."""
+    user = await db.find_one(User, User.email == email)
+    if not user or user.auth_provider == "google":
+        # Don't reveal whether the account exists
+        return {"message": "If an account exists with that email, a reset code has been sent."}
+
+    otp = generate_otp()
+    otp_log = OTPLog(
+        email=email, otp=otp, expires_at=datetime.utcnow() + timedelta(minutes=OTP_EXPIRY_MINUTES)
+    )
+    await db.save(otp_log)
+
+    try:
+        await send_otp_email(email, otp)
+    except Exception as e:
+        logger.warning(f"Password reset email failed for {email}: {e}")
+
+    return {"message": "If an account exists with that email, a reset code has been sent."}
+
+
+@router.post("/reset-password")
+async def reset_password(
+    email: str = Body(...),
+    otp: str = Body(...),
+    new_password: str = Body(...),
+    db: AIOEngine = Depends(get_db)
+):
+    """Reset password using OTP verification."""
+    validate_password(new_password)
+
+    otp_record = await db.find_one(
+        OTPLog,
+        (OTPLog.email == email) & (OTPLog.otp == otp) & (OTPLog.verified == False),
+    )
+
+    if not otp_record:
+        raise HTTPException(status_code=400, detail="Invalid OTP")
+
+    if datetime.utcnow() > otp_record.expires_at:
+        raise HTTPException(status_code=400, detail="OTP expired")
+
+    user = await db.find_one(User, User.email == email)
+    if not user:
+        raise HTTPException(status_code=400, detail="Account not found")
+
+    user.hashed_password = get_password_hash(new_password)
+    await db.save(user)
+
+    otp_record.verified = True
+    await db.save(otp_record)
+
+    return {"message": "Password reset successful. You can now log in with your new password."}

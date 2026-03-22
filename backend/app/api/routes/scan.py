@@ -3,17 +3,21 @@ from app.models.user import User
 from app.models.domain import SkinScan
 from app.api.deps import get_current_user
 from app.core.database import get_db
+from app.core.constants import DAILY_SCAN_LIMIT, MAX_UPLOAD_SIZE_BYTES, ALLOWED_IMAGE_TYPES
 from odmantic import AIOEngine
 import cloudinary.uploader
 from app.core import cloudinary_config
 from app.services.ml_model import predict as ml_predict
 from datetime import datetime
+import asyncio
+import logging
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-# ── #4: Async Cloudinary upload (runs in background after prediction) ──
-def _upload_to_cloudinary_sync(image_bytes: bytes, scan_id: str, db_engine_url: str):
+# ── Background Cloudinary upload ──
+def _upload_to_cloudinary_sync(image_bytes: bytes, scan_id: str):
     """Upload image to Cloudinary in background, update the DB record."""
     import io
     try:
@@ -23,16 +27,17 @@ def _upload_to_cloudinary_sync(image_bytes: bytes, scan_id: str, db_engine_url: 
             resource_type="image"
         )
         image_url = cloud_result["secure_url"]
-        # Update the DB record with the real URL (async via motor)
-        import asyncio
+
+        # Update DB with real URL
+        import asyncio as _asyncio
         from motor.motor_asyncio import AsyncIOMotorClient
-        from odmantic import AIOEngine
+        from odmantic import AIOEngine as _AIOEngine
         from bson import ObjectId
 
         async def _update_url():
             from app.core.config import settings
             client = AsyncIOMotorClient(settings.MONGO_URL)
-            engine = AIOEngine(client=client, database="test")
+            engine = _AIOEngine(client=client, database="skincare_ai")
             collection = engine.get_collection(SkinScan)
             await collection.update_one(
                 {"_id": ObjectId(scan_id)},
@@ -40,12 +45,11 @@ def _upload_to_cloudinary_sync(image_bytes: bytes, scan_id: str, db_engine_url: 
             )
             client.close()
 
-        # Run the async update in a new event loop (we're in a background thread)
-        loop = asyncio.new_event_loop()
+        loop = _asyncio.new_event_loop()
         loop.run_until_complete(_update_url())
         loop.close()
     except Exception as e:
-        print(f"[WARN] Background Cloudinary upload failed for scan {scan_id}: {e}")
+        logger.warning(f"Background Cloudinary upload failed for scan {scan_id}: {e}")
 
 
 @router.post("/predict")
@@ -56,29 +60,53 @@ async def predict_disease(
     background_tasks: BackgroundTasks = BackgroundTasks()
 ):
     try:
-        # Check daily upload limit
+        # ── File validation ──
+        if file.content_type not in ALLOWED_IMAGE_TYPES:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid file type: {file.content_type}. Please upload a JPEG, PNG, or WebP image."
+            )
+
+        image_bytes = await file.read()
+
+        if len(image_bytes) > MAX_UPLOAD_SIZE_BYTES:
+            size_mb = len(image_bytes) / (1024 * 1024)
+            raise HTTPException(
+                status_code=400,
+                detail=f"File too large ({size_mb:.1f}MB). Maximum allowed is {MAX_UPLOAD_SIZE_BYTES // (1024*1024)}MB."
+            )
+
+        # Verify it's a valid image
+        try:
+            from PIL import Image
+            from io import BytesIO
+            Image.open(BytesIO(image_bytes)).verify()
+        except Exception:
+            raise HTTPException(status_code=400, detail="Invalid image file. Please upload a valid photo.")
+
+        # ── Check daily upload limit ──
         today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
         try:
             daily_scans_count = await db.count(
-                SkinScan, 
+                SkinScan,
                 (SkinScan.user_id == str(current_user.id)) & (SkinScan.created_at >= today_start)
             )
         except Exception:
             daily_scans_count = 0
-            
-        if daily_scans_count >= 5:
-            raise HTTPException(status_code=429, detail="Daily upload limit reached (5 scans max per day). Please try again tomorrow.")
 
-        # Read the uploaded image bytes
-        image_bytes = await file.read()
+        if daily_scans_count >= DAILY_SCAN_LIMIT:
+            raise HTTPException(
+                status_code=429,
+                detail=f"Daily upload limit reached ({DAILY_SCAN_LIMIT} scans max per day). Please try again tomorrow."
+            )
 
-        # Run ML inference FIRST (return fast, upload later)
-        prediction = ml_predict(image_bytes)
+        # ── Run ML inference in thread pool (non-blocking) ──
+        prediction = await asyncio.to_thread(ml_predict, image_bytes)
 
-        # Save scan to DB immediately with placeholder image URL
+        # ── Save to DB with placeholder URL ──
         scan = SkinScan(
             user_id=str(current_user.id),
-            image_url="pending",  # Will be updated by background task
+            image_url="pending",
             disease_detected=prediction["disease"],
             confidence_score=prediction["confidence"],
             severity_level=prediction["severity"],
@@ -89,12 +117,9 @@ async def predict_disease(
         )
         await db.save(scan)
 
-        # #4: Upload to Cloudinary in the background (doesn't block response)
-        background_tasks.add_task(
-            _upload_to_cloudinary_sync, image_bytes, str(scan.id), ""
-        )
+        # ── Upload to Cloudinary in background ──
+        background_tasks.add_task(_upload_to_cloudinary_sync, image_bytes, str(scan.id))
 
-        # Return result immediately
         return {
             "id": str(scan.id),
             "user_id": scan.user_id,
@@ -150,11 +175,11 @@ async def get_upload_limit(
     try:
         today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
         daily_scans_count = await db.count(
-            SkinScan, 
+            SkinScan,
             (SkinScan.user_id == str(current_user.id)) & (SkinScan.created_at >= today_start)
         )
     except Exception:
         daily_scans_count = 0
-        
-    remaining = max(0, 5 - daily_scans_count)
-    return { "remaining": remaining, "limit": 5 }
+
+    remaining = max(0, DAILY_SCAN_LIMIT - daily_scans_count)
+    return {"remaining": remaining, "limit": DAILY_SCAN_LIMIT}

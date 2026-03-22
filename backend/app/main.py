@@ -1,17 +1,21 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 import time
+from datetime import datetime
 
 app = FastAPI(title="SkinCare AI API", version="1.0.0")
 
-# ── #7: Response Time Middleware ──
+# ── Gzip Compression ──
+app.add_middleware(GZipMiddleware, minimum_size=500)
+
+# ── Response Time Middleware ──
 @app.middleware("http")
 async def log_response_time(request, call_next):
     start = time.perf_counter()
     response = await call_next(request)
     elapsed = time.perf_counter() - start
     response.headers["X-Response-Time"] = f"{elapsed:.3f}s"
-    # Only log slow requests (> 0.5s) or API calls (skip static assets)
     if elapsed > 0.5 or request.url.path.startswith("/api"):
         print(f"[PERF] {request.method} {request.url.path} → {response.status_code} in {elapsed:.2f}s")
     return response
@@ -43,12 +47,10 @@ app.add_middleware(
 from app.api.main import api_router
 app.include_router(api_router, prefix="/api/v1")
 
-# ── #1 bonus: Eager model load at startup ──
+# ── Startup: pre-load ML model ──
 @app.on_event("startup")
 async def startup_event():
-    from app.core.config import settings
     print(f"[STARTUP] MongoDB configured")
-    # Pre-load the ML model so the first request is fast
     try:
         from app.services.ml_model import _get_model
         print("[STARTUP] Pre-loading ML model...")
@@ -56,6 +58,38 @@ async def startup_event():
         print("[STARTUP] ML model ready!")
     except Exception as e:
         print(f"[STARTUP] Model pre-load failed (will lazy-load): {e}")
+
+# ── Shutdown: close DB connection ──
+@app.on_event("shutdown")
+async def shutdown_event():
+    from app.core.database import db
+    if db.client:
+        db.client.close()
+        print("[SHUTDOWN] MongoDB connection closed")
+
+# ── Health Check ──
+@app.get("/health")
+async def health_check():
+    """Health check for load balancers and monitoring."""
+    from app.core.database import db
+    try:
+        if db.client:
+            await db.client.admin.command("ping")
+            db_status = "connected"
+        else:
+            db_status = "not_initialized"
+    except Exception:
+        db_status = "disconnected"
+
+    from app.services.ml_model import _model
+    model_status = "loaded" if _model is not None else "not_loaded"
+
+    return {
+        "status": "healthy",
+        "database": db_status,
+        "ml_model": model_status,
+        "timestamp": datetime.utcnow().isoformat() + "Z"
+    }
 
 @app.get("/")
 async def root():

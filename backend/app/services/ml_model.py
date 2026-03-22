@@ -9,6 +9,7 @@ import numpy as np
 from PIL import Image
 from io import BytesIO
 from pathlib import Path
+from app.core.constants import MIN_CONFIDENCE_THRESHOLD
 
 # Constants
 # ---------------------------------------------------------------------------
@@ -340,10 +341,7 @@ def _get_model():
 
 def predict(image_bytes: bytes):
     """Run real inference on skin image. Returns merged category + metadata."""
-    import numpy as np
-    from PIL import Image
-    from io import BytesIO
-    import keras
+    import keras  # intentionally lazy-loaded
 
     # 1. Get the model
     model = _get_model()
@@ -366,7 +364,7 @@ def predict(image_bytes: bytes):
     category = CLASS_MERGE_MAP.get(raw_label, raw_label)
     
     # If confidence is exceptionally low, fallback to Unknown
-    if confidence < 0.35:
+    if confidence < MIN_CONFIDENCE_THRESHOLD:
         category = "Unknown"
 
     is_unknown = (category == "Unknown")
