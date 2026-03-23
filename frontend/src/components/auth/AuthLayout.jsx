@@ -6,9 +6,9 @@ import DNAHelix from '../animations/DNAHelix';
 
 export default function AuthLayout({ children, title, subtitle }) {
     return (
-        <div className="min-h-screen flex bg-white dark:bg-slate-900 transition-colors duration-300">
+        <div className="bg-[#0d1117] bg-navy-mesh min-h-screen flex transition-colors duration-300">
             {/* Left Side - Form */}
-            <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 sm:px-12 md:px-24 bg-white dark:bg-slate-900 relative">
+            <div className="bg-[#0d1117] bg-navy-mesh w-full lg:w-1/2 flex flex-col justify-center px-4 sm:px-12 md:px-24 relative">
 
                 <motion.div
                     className="relative z-10 pt-32 lg:pt-24"
@@ -30,7 +30,7 @@ export default function AuthLayout({ children, title, subtitle }) {
             </div>
 
             {/* Right Side - Visual */}
-            <div className="hidden lg:flex w-1/2 bg-slate-950 relative overflow-hidden items-center justify-center p-12">
+            <div className="bg-[#0d1117] bg-navy-mesh hidden lg:flex w-1/2 relative overflow-hidden items-center justify-center p-12">
                 <div className="absolute inset-0 bg-gradient-to-br from-medical-900/40 to-slate-950 opacity-100"></div>
                 {/* Decorative DNA */}
                 <div className="absolute inset-0 opacity-20 transform scale-150 rotate-45 pointer-events-none">

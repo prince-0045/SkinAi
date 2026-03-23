@@ -20,9 +20,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code
+# Copy the application code (includes app/models/ with MobileNetV2.pkl + MobileNetV2.weights.h5)
 COPY app/ ./app/
-COPY model.h5 ./model.h5
 
 # Expose the port FastAPI will run on
 EXPOSE 8000

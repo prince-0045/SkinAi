@@ -296,6 +296,10 @@ def _get_model():
             mock_mod = types.ModuleType('tensorflow.python._pywrap_quantize_training')
             mock_mod.DoQuantizeTrainingOnGraphDefHelper = lambda *args, **kwargs: None
             sys.modules['tensorflow.python._pywrap_quantize_training'] = mock_mod
+            
+            mock_lite = types.ModuleType('tensorflow.lite.python.metrics._pywrap_tensorflow_lite_metrics_wrapper')
+            mock_lite.MetricsWrapper = lambda *args, **kwargs: None
+            sys.modules['tensorflow.lite.python.metrics._pywrap_tensorflow_lite_metrics_wrapper'] = mock_lite
         except Exception:
             pass
 

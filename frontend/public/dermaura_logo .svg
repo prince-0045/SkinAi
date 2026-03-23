@@ -1,0 +1,83 @@
+<svg width="680" height="200" viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ibg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e4a8a"/>
+      <stop offset="100%" stop-color="#0a1e42"/>
+    </linearGradient>
+    <linearGradient id="pg1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#378ADD" stop-opacity="0"/>
+      <stop offset="20%"  stop-color="#378ADD"/>
+      <stop offset="65%"  stop-color="#5DCAA5"/>
+      <stop offset="100%" stop-color="#5DCAA5" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="pg2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#85B7EB" stop-opacity="0"/>
+      <stop offset="45%"  stop-color="#85B7EB" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#85B7EB" stop-opacity="0"/>
+    </linearGradient>
+
+    <style>
+      @keyframes pulse-run {
+        0%   { stroke-dashoffset: 300; opacity: 0; }
+        8%   { opacity: 1; }
+        82%  { opacity: 1; }
+        100% { stroke-dashoffset: 0; opacity: 0; }
+      }
+      @keyframes pulse-run2 {
+        0%   { stroke-dashoffset: 300; opacity: 0; }
+        8%   { opacity: 0.5; }
+        82%  { opacity: 0.5; }
+        100% { stroke-dashoffset: 0; opacity: 0; }
+      }
+      @keyframes beat {
+        0%,100% { r: 4.5px; opacity: 0.95; }
+        50%     { r: 7.5px; opacity: 0.35; }
+      }
+      @keyframes beatinner {
+        0%,100% { r: 1.8px; }
+        50%     { r: 3.2px; }
+      }
+      @keyframes ring-breathe {
+        0%,100% { opacity: 0.55; }
+        50%     { opacity: 0.15; }
+      }
+      .pl  { stroke-dasharray:300; animation: pulse-run   2.4s ease-in-out infinite; }
+      .pl2 { stroke-dasharray:300; animation: pulse-run2  2.4s ease-in-out infinite 0.22s; }
+      .bt  { animation: beat        2.4s ease-in-out infinite; }
+      .bti { animation: beatinner   2.4s ease-in-out infinite; }
+      .rb  { animation: ring-breathe 2.4s ease-in-out infinite; }
+    </style>
+  </defs>
+
+  <!-- Outer breathing ring -->
+  <circle class="rb" cx="100" cy="100" r="80" fill="none" stroke="#378ADD" stroke-width="1" stroke-dasharray="4 6"/>
+
+  <!-- Main filled circle -->
+  <circle cx="100" cy="100" r="66" fill="url(#ibg)" stroke="#60a5e8" stroke-width="2.2"/>
+
+  <!-- Inner ring accent -->
+  <circle cx="100" cy="100" r="58" fill="none" stroke="#85B7EB" stroke-width="0.6" opacity="0.3"/>
+
+  <!-- Animated pulse line -->
+  <path class="pl"
+    d="M37 100 L53 100 L62 100 L70 76 L80 124 L88 92 L95 100 L100 100 L105 100 L112 76 L122 124 L130 92 L138 100 L163 100"
+    fill="none" stroke="url(#pg1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Echo line -->
+  <path class="pl2"
+    d="M37 110 L53 110 L62 110 L70 90 L80 130 L88 108 L95 110 L100 110 L105 110 L112 90 L122 130 L130 108 L138 110 L163 110"
+    fill="none" stroke="url(#pg2)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Beat dot -->
+  <circle class="bt"  cx="100" cy="100" r="4.5" fill="#5DCAA5"/>
+  <circle class="bti" cx="100" cy="100" r="1.8" fill="#ffffff"/>
+
+  <!-- Single line: Derm white + Aura blue -->
+  <text x="200" y="122"
+        font-family="Georgia,'Times New Roman',serif"
+        font-size="80" font-weight="700"
+        letter-spacing="-2">
+    <tspan fill="#ffffff">Derm</tspan><tspan fill="#4fa8f0">Aura</tspan>
+  </text>
+
+</svg>

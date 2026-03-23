@@ -1,0 +1,132 @@
+<svg width="100%" viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg">
+
+  <defs>
+    <style>
+@keyframes pulse-run {
+  0%   { stroke-dashoffset: 300; opacity: 0; }
+  10%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0.9; }
+}
+@keyframes pulse-run2 {
+  0%   { stroke-dashoffset: 300; opacity: 0; }
+  10%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0.7; }
+}
+@keyframes aura-ring1 {
+  0%   { r: 46; opacity: 0.35; }
+  50%  { r: 52; opacity: 0.15; }
+  100% { r: 46; opacity: 0.35; }
+}
+@keyframes aura-ring2 {
+  0%   { r: 58; opacity: 0.2; }
+  50%  { r: 64; opacity: 0.08; }
+  100% { r: 58; opacity: 0.2; }
+}
+@keyframes dot-beat {
+  0%,100% { r: 3; opacity: 0.9; }
+  50%     { r: 5; opacity: 0.6; }
+}
+@keyframes dot-beat2 {
+  0%,100% { r: 1.2; opacity: 1; }
+  50%     { r: 2; opacity: 0.6; }
+}
+@keyframes skin-dot1 {
+  0%,100% { opacity: 0.7; }
+  50%     { opacity: 0.2; }
+}
+@keyframes skin-dot2 {
+  0%,100% { opacity: 0.5; }
+  50%     { opacity: 0.15; }
+}
+@keyframes skin-dot3 {
+  0%,100% { opacity: 0.6; }
+  50%     { opacity: 0.2; }
+}
+@keyframes word-fade {
+  0%,100% { opacity: 0.97; }
+  50%     { opacity: 0.75; }
+}
+.pulse-line {
+  stroke-dasharray: 300;
+  animation: pulse-run 2.2s ease-in-out infinite;
+}
+.pulse-line2 {
+  stroke-dasharray: 300;
+  animation: pulse-run2 2.2s ease-in-out infinite 0.18s;
+}
+.aura1 { animation: aura-ring1 3s ease-in-out infinite; }
+.aura2 { animation: aura-ring2 3s ease-in-out infinite 0.5s; }
+.beat1 { animation: dot-beat 2.2s ease-in-out infinite; }
+.beat2 { animation: dot-beat2 2.2s ease-in-out infinite; }
+.sd1 { animation: skin-dot1 2.8s ease-in-out infinite; }
+.sd2 { animation: skin-dot2 2.8s ease-in-out infinite 0.4s; }
+.sd3 { animation: skin-dot3 2.8s ease-in-out infinite 0.9s; }
+</style>
+    <linearGradient id="ibg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a3a6e"/>
+      <stop offset="100%" stop-color="#071428"/>
+    </linearGradient>
+    <linearGradient id="pulsegrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#378ADD" stop-opacity="0"/>
+      <stop offset="25%"  stop-color="#378ADD" stop-opacity="1"/>
+      <stop offset="60%"  stop-color="#5DCAA5" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#5DCAA5" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="pulsegrad2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#185FA5" stop-opacity="0"/>
+      <stop offset="40%"  stop-color="#85B7EB" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#85B7EB" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon box -->
+  <rect x="50" y="50" width="160" height="200" rx="32" fill="url(#ibg)"/>
+  <rect x="50" y="50" width="160" height="200" rx="32" fill="none" stroke="#378ADD" stroke-width="1" opacity="0.5"/>
+
+  <!-- Corner brackets -->
+  <path d="M58 62 L58 54 L68 54" fill="none" stroke="#378ADD" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+  <path d="M202 62 L202 54 L192 54" fill="none" stroke="#378ADD" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+  <path d="M58 238 L58 246 L68 246" fill="none" stroke="#378ADD" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+  <path d="M202 238 L202 246 L192 246" fill="none" stroke="#378ADD" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+
+  <!-- Human head -->
+  <circle cx="130" cy="108" r="22" fill="#0C447C" stroke="#378ADD" stroke-width="1.3" opacity="0.92"/>
+
+  <!-- Skin texture dots on face — pulsing -->
+  <circle class="sd1" cx="122" cy="104" r="2.2" fill="#85B7EB"/>
+  <circle class="sd2" cx="138" cy="107" r="1.7" fill="#85B7EB"/>
+  <circle class="sd3" cx="128" cy="115" r="1.5" fill="#5DCAA5"/>
+
+  <!-- Shoulders / body -->
+  <path d="M92 248 Q92 215 110 206 Q119 202 130 202 Q141 202 150 206 Q168 215 168 248" fill="#0C447C" stroke="#378ADD" stroke-width="1.3" opacity="0.92"/>
+
+  <!-- Aura rings — breathing -->
+  <circle class="aura1" cx="130" cy="165" r="46" fill="none" stroke="#378ADD" stroke-width="0.9" stroke-dasharray="3 5" opacity="0.35"/>
+  <circle class="aura2" cx="130" cy="165" r="58" fill="none" stroke="#185FA5" stroke-width="0.5" stroke-dasharray="2 8" opacity="0.2"/>
+
+  <!-- ══ ANIMATED PULSE LINE (main ECG) ══ -->
+  <path class="pulse-line"
+    d="M64 175 L84 175 L92 175 L98 155 L106 195 L113 165 L120 175 L130 175 L140 175 L146 155 L154 195 L161 165 L168 175 L196 175"
+    fill="none" stroke="url(#pulsegrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- ══ ANIMATED PULSE LINE (echo / shadow line) ══ -->
+  <path class="pulse-line2"
+    d="M64 183 L84 183 L92 183 L98 168 L106 198 L113 178 L120 183 L130 183 L140 183 L146 168 L154 198 L161 178 L168 183 L196 183"
+    fill="none" stroke="url(#pulsegrad2)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Beat dot at heart center — pulsing -->
+  <circle class="beat1" cx="130" cy="175" r="3" fill="#5DCAA5"/>
+  <circle class="beat2" cx="130" cy="175" r="1.2" fill="#ffffff"/>
+
+  <!-- ══ WORDMARK ══ -->
+  <text x="240" y="148" font-family="Georgia,'Times New Roman',serif" font-size="72" font-weight="700" fill="#ffffff" letter-spacing="-2">Derm</text>
+  <text x="240" y="222" font-family="Georgia,'Times New Roman',serif" font-size="72" font-weight="700" fill="#378ADD" letter-spacing="-2">Aura</text>
+
+  <!-- Tagline -->
+  <text x="242" y="255" font-family="'Courier New',monospace" font-size="12" fill="#85B7EB" letter-spacing="4" opacity="0.65">AI · SKIN · INTELLIGENCE</text>
+  <line x1="242" y1="264" x2="596" y2="264" stroke="#378ADD" stroke-width="0.5" opacity="0.25"/>
+  <text x="242" y="280" font-family="'Courier New',monospace" font-size="10" fill="#85B7EB" letter-spacing="2" opacity="0.38">by Mahir &amp; Prince</text>
+
+</svg>

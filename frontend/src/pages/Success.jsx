@@ -37,7 +37,7 @@ export default function Success() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-medical-50 dark:bg-slate-900 transition-colors duration-300 flex items-center justify-center px-4">
+        <div className="bg-[#0d1117] bg-navy-mesh min-h-screen transition-colors duration-300 flex items-center justify-center px-4">
             <motion.div
                 className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center"
                 initial={{ scale: 0.9, opacity: 0 }}

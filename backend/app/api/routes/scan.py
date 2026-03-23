@@ -168,7 +168,9 @@ async def get_scan_history(
         for scan in scans
     ]
     response = JSONResponse(content=result)
-    response.headers["Cache-Control"] = "private, max-age=30"
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
     return response
 
 @router.get("/limit")

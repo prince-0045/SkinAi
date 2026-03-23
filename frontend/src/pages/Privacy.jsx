@@ -16,10 +16,10 @@ const Section = ({ icon: Icon, title, children }) => (
 
 export default function Privacy() {
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300 pt-24 pb-12">
+        <div className="bg-[#0d1117] bg-navy-mesh min-h-screen transition-colors duration-300 pt-24 pb-12">
             <Helmet>
-                <title>Privacy Policy - SkinAi</title>
-                <meta name="description" content="SkinAi privacy policy — how we handle your data." />
+                <title>Privacy Policy - DERMAURA</title>
+                <meta name="description" content="DERMAURA privacy policy — how we handle your data." />
             </Helmet>
 
             <div className="max-w-3xl mx-auto px-4 sm:px-6">
@@ -29,11 +29,11 @@ export default function Privacy() {
 
                     <Section icon={Shield} title="Overview">
                         <p>
-                            SkinAi is an AI-powered skin analysis tool designed for educational and informational purposes.
+                            DERMAURA is an AI-powered skin analysis tool designed for educational and informational purposes.
                             We are committed to protecting your privacy and handling your data responsibly.
                         </p>
                         <p className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 text-amber-800 dark:text-amber-200 text-sm">
-                            <strong>Important:</strong> SkinAi is NOT a medical device and does NOT provide medical diagnoses.
+                            <strong>Important:</strong> DERMAURA is NOT a medical device and does NOT provide medical diagnoses.
                             Always consult a qualified healthcare professional for medical advice.
                         </p>
                     </Section>

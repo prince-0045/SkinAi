@@ -115,9 +115,9 @@ export default function Profile() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300 pt-24 pb-12">
+        <div className="bg-[#0d1117] bg-navy-mesh min-h-screen transition-colors duration-300 pt-24 pb-12">
             <Helmet>
-                <title>Profile - SkinAi</title>
+                <title>Profile - DERMAURA</title>
             </Helmet>
 
             <div className="max-w-4xl mx-auto px-4 sm:px-6">

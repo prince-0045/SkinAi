@@ -25,9 +25,9 @@ const FeatureCard = ({ icon: Icon, title, description, delay }) => (
 
 export default function Landing() {
     return (
-        <div className="min-h-screen bg-white dark:bg-slate-900 transition-colors duration-300">
+        <div className="bg-[#0d1117] bg-navy-mesh min-h-screen transition-colors duration-300">
             <Helmet>
-                <title>SkinAi - Advanced Skin Disease Detection</title>
+                <title>DERMAURA - Advanced Skin Disease Detection</title>
                 <meta name="description" content="AI-powered skin disease detection and healing tracker." />
             </Helmet>
 
@@ -41,7 +41,7 @@ export default function Landing() {
                 </div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">Why Choose SkinAi?</h2>
+                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">Why Choose DERMAURA?</h2>
                         <p className="mt-4 text-lg text-gray-500">Comprehensive dermatological analysis at your fingertips</p>
                     </div>
 

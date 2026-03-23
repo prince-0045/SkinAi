@@ -1,0 +1,14 @@
+config:
+  target: "http://localhost:8000"
+  phases:
+    - duration: 30       # Run the test for 30 seconds
+      arrivalRate: 5     # 5 new users hitting signup per second
+scenarios:
+  - name: "User Signup Flow"
+    flow:
+      - post:
+          url: "/api/v1/auth/signup"  # Corrected route
+          json:
+            email: "loadtest_{{$randomNumber(1, 100000)}}@example.com"
+            password: "TestPassword123!"
+            name: "Test User"

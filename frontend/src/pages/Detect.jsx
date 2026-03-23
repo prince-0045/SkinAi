@@ -145,7 +145,7 @@ export default function Detect() {
     const sevCfg = result ? (SEVERITY_CONFIG[result.severity] || SEVERITY_CONFIG.Unknown) : null;
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300 pt-20 pb-12">
+        <div className="bg-[#0d1117] bg-navy-mesh min-h-screen transition-colors duration-300 pt-20 pb-12">
             <div className="max-w-5xl mx-auto px-4 sm:px-6">
                 <div className="text-center mb-10">
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white">AI Skin Disease Detection</h1>

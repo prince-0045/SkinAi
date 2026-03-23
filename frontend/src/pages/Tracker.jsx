@@ -125,9 +125,9 @@ export default function Tracker() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300 pt-24 pb-12">
+        <div className="bg-[#0d1117] bg-navy-mesh min-h-screen transition-colors duration-300 pt-24 pb-12">
             <Helmet>
-                <title>History - SkinAi</title>
+                <title>History - DERMAURA</title>
             </Helmet>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
