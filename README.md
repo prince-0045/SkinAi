@@ -12,6 +12,45 @@ SkinAi is an advanced AI-powered application designed to help users detect skin 
 -   **User Dashboard**: Personalized dashboard to manage scans, track history, and view reports.
 -   **Modern UI/UX**: A responsive and aesthetic interface built with React and Tailwind CSS.
 
+## 🏗️ Architecture
+
+```mermaid
+graph TB
+    subgraph Frontend["Frontend (React + Vite)"]
+        A[Landing Page] --> B[Auth Pages]
+        B --> C[Detect Page]
+        C --> D[Tracker Page]
+        D --> E[Profile Page]
+        C --> F[Doctor Finder]
+    end
+
+    subgraph Backend["Backend (FastAPI)"]
+        G[Auth Routes] --> H[JWT + Argon2]
+        I[Scan Routes] --> J[ML Service]
+        K[User Routes] --> L[ODMantic ORM]
+    end
+
+    subgraph ML["ML Pipeline"]
+        J --> M[MobileNetV2]
+        M --> N[13-Class Prediction]
+        N --> O[Disease Info + Severity]
+    end
+
+    subgraph External["External Services"]
+        P[(MongoDB Atlas)]
+        Q[Cloudinary CDN]
+        R[Google OAuth]
+        S[SMTP Email]
+    end
+
+    Frontend -->|REST API| Backend
+    L --> P
+    I -->|Background Task| Q
+    G --> R
+    G --> S
+```
+
+
 ## 🛠️ Tech Stack
 
 ### Frontend
@@ -106,6 +145,56 @@ Run the frontend development server:
 npm run dev
 ```
 The application will usually run at `http://localhost:5173`.
+
+## 📖 API Usage Examples
+
+Here are examples of how to consume the SkinAi backend API from external clients.
+
+### 1. Upload a Image for Analysis
+**Endpoint:** `POST /api/v1/scan/upload`
+**Auth:** Bearer Token
+
+```bash
+curl -X POST "http://localhost:8000/api/v1/scan/upload" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -H "accept: application/json" \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@/path/to/your/skin-image.jpg"
+```
+
+### 2. Retrieve Scan History (with Cache Headers)
+**Endpoint:** `POST /api/v1/scan/history`
+**Auth:** Bearer Token
+
+```bash
+curl -X GET "http://localhost:8000/api/v1/scan/history" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -H "accept: application/json"
+```
+
+---
+
+## 🚀 Production Deployment Guide
+
+For a highly available production environment, follow these best practices rather than the local dev commands.
+
+### Backend (Gunicorn + Uvicorn Workers)
+Do not use raw `uvicorn` in production. Run with Gunicorn to manage multiple worker processes and prevent the ML model from blocking connections.
+```bash
+# Recommended: 4 workers for standard VMs
+gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+```
+
+*Ensure `MONGO_URL` points to a scaled cluster (Atlas Tier M10+) and your Cloudinary quota is sufficient.*
+
+### Frontend (Nginx/Vercel)
+The standard `npm run dev` is not for production.
+
+1. Build the production application (creates the PWA artifacts):
+   ```bash
+   npm run build
+   ```
+2. Serve the `dist/` directory using **Nginx**, **Vercel**, or **Netlify**. Ensure Single Page App (SPA) routing is configured so all paths fall back to `index.html`.
 
 ## 🤝 Contributing
 

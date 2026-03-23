@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../components/auth/AuthLayout';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, ArrowRight } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { useGoogleLogin } from '@react-oauth/google';
 
 export default function Login() {
@@ -11,6 +11,7 @@ export default function Login() {
 
     const { login, googleLogin } = useAuth();
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -92,15 +93,22 @@ export default function Login() {
                             <Lock className="h-5 w-5 text-gray-400" />
                         </div>
                         <input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             name="password"
                             id="password"
                             required
-                            className="focus:ring-medical-500 focus:border-medical-500 block w-full pl-10 sm:text-sm bg-gray-50 dark:bg-slate-800/50 border-gray-300 dark:border-slate-700 rounded-lg py-3 text-gray-900 dark:text-white"
+                            className="focus:ring-medical-500 focus:border-medical-500 block w-full pl-10 pr-10 sm:text-sm bg-gray-50 dark:bg-slate-800/50 border-gray-300 dark:border-slate-700 rounded-lg py-3 text-gray-900 dark:text-white"
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition"
+                        >
+                            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                        </button>
                     </div>
                 </div>
 

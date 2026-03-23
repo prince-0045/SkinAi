@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, BackgroundTasks
+from fastapi.responses import JSONResponse
 from app.models.user import User
 from app.models.domain import SkinScan
 from app.api.deps import get_current_user
@@ -150,7 +151,7 @@ async def get_scan_history(
     db: AIOEngine = Depends(get_db)
 ):
     scans = await db.find(SkinScan, SkinScan.user_id == str(current_user.id), sort=SkinScan.created_at.desc())
-    return [
+    result = [
         {
             "id": str(scan.id),
             "user_id": scan.user_id,
@@ -166,6 +167,9 @@ async def get_scan_history(
         }
         for scan in scans
     ]
+    response = JSONResponse(content=result)
+    response.headers["Cache-Control"] = "private, max-age=30"
+    return response
 
 @router.get("/limit")
 async def get_upload_limit(

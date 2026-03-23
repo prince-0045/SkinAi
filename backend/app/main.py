@@ -1,10 +1,39 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from starlette.responses import JSONResponse
 import time
+import logging
 from datetime import datetime
 
+# ── Structured Logging ──
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)-7s | %(name)s | %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger("skinai")
+
+# ── Rate Limiter ──
+limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
+
 app = FastAPI(title="SkinCare AI API", version="1.0.0")
+
+# Attach limiter to app
+app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
+
+# ── Custom rate limit error handler ──
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    return JSONResponse(
+        status_code=429,
+        content={"detail": "Too many requests. Please slow down and try again shortly."}
+    )
 
 # ── Gzip Compression ──
 app.add_middleware(GZipMiddleware, minimum_size=500)
@@ -17,7 +46,7 @@ async def log_response_time(request, call_next):
     elapsed = time.perf_counter() - start
     response.headers["X-Response-Time"] = f"{elapsed:.3f}s"
     if elapsed > 0.5 or request.url.path.startswith("/api"):
-        print(f"[PERF] {request.method} {request.url.path} → {response.status_code} in {elapsed:.2f}s")
+        logger.info(f"{request.method} {request.url.path} → {response.status_code} in {elapsed:.2f}s")
     return response
 
 from app.core.config import settings
@@ -50,14 +79,14 @@ app.include_router(api_router, prefix="/api/v1")
 # ── Startup: pre-load ML model ──
 @app.on_event("startup")
 async def startup_event():
-    print(f"[STARTUP] MongoDB configured")
+    logger.info("MongoDB configured")
     try:
         from app.services.ml_model import _get_model
-        print("[STARTUP] Pre-loading ML model...")
+        logger.info("Pre-loading ML model...")
         _get_model()
-        print("[STARTUP] ML model ready!")
+        logger.info("ML model ready!")
     except Exception as e:
-        print(f"[STARTUP] Model pre-load failed (will lazy-load): {e}")
+        logger.warning(f"Model pre-load failed (will lazy-load): {e}")
 
 # ── Shutdown: close DB connection ──
 @app.on_event("shutdown")
@@ -65,7 +94,7 @@ async def shutdown_event():
     from app.core.database import db
     if db.client:
         db.client.close()
-        print("[SHUTDOWN] MongoDB connection closed")
+        logger.info("MongoDB connection closed")
 
 # ── Health Check ──
 @app.get("/health")

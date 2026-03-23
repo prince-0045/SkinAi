@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../context/AuthContext';
-import { User, Shield, Phone, Mail, LogOut, Clock, Calendar, CheckCircle, X, Download } from 'lucide-react';
+import { User, Shield, Phone, Mail, LogOut, Clock, Calendar, CheckCircle, X, Download, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { downloadMedicalReport } from '../utils/pdfGenerator';
 
@@ -36,7 +36,7 @@ export default function Profile() {
                         date: new Date(item.created_at).toISOString().split('T')[0],
                         type: 'Scan',
                         result: item.disease_detected,
-                        status: 'Detected'
+                        status: item.disease_detected === 'Unknown' ? 'Not Detected' : 'Detected'
                     }));
                     setHistory(formattedHistory);
                 } else {
@@ -75,6 +75,7 @@ export default function Profile() {
         confirmPassword: ''
     });
     const [changePasswordStatus, setChangePasswordStatus] = useState({ type: '', message: '' });
+    const [showPasswords, setShowPasswords] = useState(false);
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
@@ -255,33 +256,46 @@ export default function Profile() {
                             <form onSubmit={handleChangePassword} className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
-                                    <input
-                                        type="password"
-                                        required
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-medical-500 outline-none transition"
-                                        value={changePasswordForm.currentPassword}
-                                        onChange={(e) => setChangePasswordForm({ ...changePasswordForm, currentPassword: e.target.value })}
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type={showPasswords ? "text" : "password"}
+                                            required
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-medical-500 outline-none transition text-gray-900 bg-white"
+                                            value={changePasswordForm.currentPassword}
+                                            onChange={(e) => setChangePasswordForm({ ...changePasswordForm, currentPassword: e.target.value })}
+                                        />
+                                        <button 
+                                            type="button" 
+                                            onClick={() => setShowPasswords(!showPasswords)}
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
+                                        >
+                                            {showPasswords ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                        </button>
+                                    </div>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-                                    <input
-                                        type="password"
-                                        required
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-medical-500 outline-none transition"
-                                        value={changePasswordForm.newPassword}
-                                        onChange={(e) => setChangePasswordForm({ ...changePasswordForm, newPassword: e.target.value })}
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type={showPasswords ? "text" : "password"}
+                                            required
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-medical-500 outline-none transition text-gray-900 bg-white"
+                                            value={changePasswordForm.newPassword}
+                                            onChange={(e) => setChangePasswordForm({ ...changePasswordForm, newPassword: e.target.value })}
+                                        />
+                                    </div>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-                                    <input
-                                        type="password"
-                                        required
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-medical-500 outline-none transition"
-                                        value={changePasswordForm.confirmPassword}
-                                        onChange={(e) => setChangePasswordForm({ ...changePasswordForm, confirmPassword: e.target.value })}
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type={showPasswords ? "text" : "password"}
+                                            required
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-medical-500 outline-none transition text-gray-900 bg-white"
+                                            value={changePasswordForm.confirmPassword}
+                                            onChange={(e) => setChangePasswordForm({ ...changePasswordForm, confirmPassword: e.target.value })}
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className="flex justify-end space-x-3 pt-2">

@@ -19,7 +19,10 @@ numpy
 scikit-learn
 opencv-python-headless
 cloudinary
-
 tensorflow-cpu
 tf-keras
 boto3
+slowapi
+pytest
+pytest-asyncio
+anyio
