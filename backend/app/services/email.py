@@ -3,21 +3,31 @@ from app.core.config import settings
 from pydantic import EmailStr
 from pathlib import Path
 
-conf = ConnectionConfig(
-    MAIL_USERNAME=settings.MAIL_USERNAME,
-    MAIL_PASSWORD=settings.MAIL_PASSWORD,
-    MAIL_FROM=settings.MAIL_FROM,
-    MAIL_PORT=settings.MAIL_PORT,
-    MAIL_SERVER=settings.MAIL_SERVER,
-    MAIL_STARTTLS=settings.MAIL_STARTTLS,
-    MAIL_SSL_TLS=settings.MAIL_SSL_TLS,
-    USE_CREDENTIALS=True,
-    VALIDATE_CERTS=False, # Disable certificate validation for better compatibility on Windows
+# --- NEW: AWS SES SDK Logic (Bypasses Port Blocking) ---
+ses_client = boto3.client(
+    'ses',
+    region_name=settings.AWS_REGION,
+    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
 )
+
+# --- OLD: SMTP Configuration (Commented out for reference) ---
+# from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
+# conf = ConnectionConfig(
+#     MAIL_USERNAME=settings.MAIL_USERNAME,
+#     MAIL_PASSWORD=settings.MAIL_PASSWORD,
+#     MAIL_FROM=settings.MAIL_FROM,
+#     MAIL_PORT=settings.MAIL_PORT,
+#     MAIL_SERVER=settings.MAIL_SERVER,
+#     MAIL_STARTTLS=settings.MAIL_STARTTLS,
+#     MAIL_SSL_TLS=settings.MAIL_SSL_TLS,
+#     USE_CREDENTIALS=True,
+#     VALIDATE_CERTS=False
+# )
 
 
 async def send_otp_email(email: EmailStr, otp: str):
-    print(f"Attempting to send OTP email to {email}")
+    print(f"Attempting to send OTP email via AWS SES to {email}")
     html = f"""
     <html>
         <body>
@@ -31,24 +41,43 @@ async def send_otp_email(email: EmailStr, otp: str):
     </html>
     """
 
-    message = MessageSchema(
-        subject="SkinCare AI - Verification Code",
-        recipients=[email],
-        body=html,
-        subtype=MessageType.html,
-    )
-
-    fm = FastMail(conf)
+    # --- AWS SES Implementation ---
     try:
-        print(f"DEBUG: Connection Config: {conf.MAIL_SERVER}:{conf.MAIL_PORT}, User={conf.MAIL_USERNAME}, SSL={conf.MAIL_SSL_TLS}")
-        await fm.send_message(message)
-        print("SUCCESS: Email sent successfully")
-    except Exception as e:
-        print(f"CRITICAL ERROR sending email: {type(e).__name__} - {e}")
-        import traceback
-        traceback.print_exc()
-        # Keep raising to let the caller handle it
+        response = ses_client.send_email(
+            Source=settings.MAIL_FROM,
+            Destination={'ToAddresses': [email]},
+            Message={
+                'Subject': {'Data': 'SkinCare AI - Verification Code'},
+                'Body': {
+                    'Html': {'Data': html}
+                }
+            }
+        )
+        print(f"SUCCESS: Email sent via SES. Message ID: {response['MessageId']}")
+    except ClientError as e:
+        print(f"SES CRITICAL ERROR: {e.response['Error']['Message']}")
         raise e
+    except Exception as e:
+        print(f"General Error sending email: {e}")
+        raise e
+
+    # --- OLD SMTP IMPLEMENTATION (Commented) ---
+    # message = MessageSchema(
+    #     subject="SkinCare AI - Verification Code",
+    #     recipients=[email],
+    #     body=html,
+    #     subtype=MessageType.html,
+    # )
+    # fm = FastMail(conf)
+    # try:
+    #     print(f"DEBUG: Connection Config: {conf.MAIL_SERVER}:{conf.MAIL_PORT}, User={conf.MAIL_USERNAME}")
+    #     await fm.send_message(message)
+    #     print("Email sent successfully")
+    # except Exception as e:
+    #     print(f"Error sending email: {e}")
+    #     import traceback
+    #     traceback.print_exc()
+    #     raise e
 
 
 async def send_welcome_email(email: EmailStr, name: str):
@@ -64,17 +93,24 @@ async def send_welcome_email(email: EmailStr, name: str):
     </html>
     """
 
-    message = MessageSchema(
-        subject="Welcome to SkinCare AI",
-        recipients=[email],
-        body=html,
-        subtype=MessageType.html,
-    )
-
-    fm = FastMail(conf)
+    # --- AWS SES Implementation ---
     try:
-        await fm.send_message(message)
-        print("Welcome email sent successfully")
+        response = ses_client.send_email(
+            Source=settings.MAIL_FROM,
+            Destination={'ToAddresses': [email]},
+            Message={
+                'Subject': {'Data': 'Welcome to SkinCare AI'},
+                'Body': {
+                    'Html': {'Data': html}
+                }
+            }
+        )
+        print(f"SUCCESS: Welcome email sent via SES. Message ID: {response['MessageId']}")
     except Exception as e:
-        print(f"Error sending welcome email: {e}")
-        raise e
+        print(f"Error sending welcome email via SES: {e}")
+        # Not raising here to prevent signup flow from breaking if welcome email fails
+
+    # --- OLD SMTP IMPLEMENTATION (Commented) ---
+    # message = MessageSchema(...)
+    # fm = FastMail(conf)
+    # await fm.send_message(message)
