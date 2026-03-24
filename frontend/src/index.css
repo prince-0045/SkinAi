@@ -8,27 +8,27 @@
   --font-display: 'Syne', sans-serif;
   --font-body:    'DM Sans', sans-serif;
 
-  /* Backgrounds */
-  --bg-base:        #f8faff;
+  /* Backgrounds (Skin-Tone Harmony) */
+  --bg-base:        #FAF7F3; /* Cream */
   --bg-surface:     #ffffff;
   --bg-card:        #ffffff;
-  --bg-card-hover:  #f0f7ff;
+  --bg-card-hover:  #f2ece6;
 
   /* Borders */
-  --border-subtle:  rgba(55, 138, 221, 0.08);
-  --border-glow:    rgba(55, 138, 221, 0.25);
+  --border-subtle:  rgba(163, 193, 173, 0.15); /* Mint-tinted */
+  --border-glow:    rgba(217, 162, 153, 0.35); /* Coral-tinted */
 
-  /* Blues */
-  --blue-bright:    #378ADD;
-  --blue-mid:       #1a5fa8;
-  --blue-soft:      #60a5e8;
-  --blue-dim:       #e0f0ff;
+  /* Primary & Accents */
+  --blue-bright:    #A3C1AD; /* Pale Green/Mint */
+  --blue-mid:       #D9A299; /* Soft Coral */
+  --blue-soft:      #BFC6C4; /* Mint Gray */
+  --blue-dim:       #f0f4f2;
 
-  /* Text Colors (Light Mode) */
-  --white-full:     #080f1e;
-  --white-soft:     #1e293b;
-  --white-muted:    #475569;
-  --white-faint:    #94a3b8;
+  /* Text Colors (Warm Contrast) */
+  --white-full:     #4a3d3d; /* Dark Warm Earthy Text */
+  --white-soft:     #6b5a5a;
+  --white-muted:    #8a7c7c;
+  --white-faint:    #b5a8a8;
 }
 
 .dark {
