@@ -32,7 +32,6 @@ export default function Footer() {
                 <div className="border-t border-[var(--border-subtle)] mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm gap-4">
                     <p>&copy; {new Date().getFullYear()} DERMAURA. All rights reserved.</p>
                     <div className="flex items-center gap-6">
-                        <Link to="/privacy" className="text-[var(--blue-soft)] hover:text-[var(--blue-bright)] transition">Privacy Policy</Link>
                         <p className="flex items-center">
                             Made with <Heart className="h-4 w-4 text-red-500 mx-1 fill-current" /> for healthy skin
                         </p>
