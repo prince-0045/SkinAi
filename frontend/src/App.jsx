@@ -14,6 +14,7 @@ import Detect from './pages/Detect';
 import Tracker from './pages/Tracker';
 import Profile from './pages/Profile';
 import Doctors from './pages/Doctors';
+import Admin from './pages/Admin';
 import Privacy from './pages/Privacy';
 import { useAuth } from './context/AuthContext';
 
