@@ -28,13 +28,13 @@ const ChartTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
             <div className="card p-3 text-sm z-50 shadow-2xl">
-                <p className="font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>{payload[0].payload.name}</p>
+                <p className="font-bold text-[var(--white-full)]" style={{ fontFamily: 'var(--font-display)' }}>{payload[0].payload.name}</p>
                 <p className="text-[var(--white-muted)] text-xs mb-2">{payload[0].payload.dateDetailed}</p>
                 <p className="text-[var(--blue-soft)]">
                     Confidence: <span className="font-bold text-[var(--blue-bright)]">{payload[0].value}%</span>
                 </p>
                 {payload[0].payload.condition && (
-                    <p className="text-white mt-0.5 font-medium">
+                    <p className="text-[var(--white-full)] mt-0.5 font-medium">
                         {payload[0].payload.condition}
                     </p>
                 )}
@@ -175,7 +175,7 @@ export default function Tracker() {
                 ) : history.length === 0 ? (
                     <div className="text-center py-12 card !shadow-none">
                         <Activity className="w-12 h-12 text-[var(--blue-mid)] mx-auto mb-4 opacity-50" />
-                        <h3 className="text-lg font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>No scans yet</h3>
+                        <h3 className="text-lg font-bold text-[var(--white-full)]" style={{ fontFamily: 'var(--font-display)' }}>No scans yet</h3>
                         <p className="text-[var(--white-muted)] mt-2">Upload your first image to get started.</p>
                     </div>
                 ) : (
@@ -221,7 +221,7 @@ export default function Tracker() {
                                 animate={{ opacity: 1 }}
                                 className="card p-6 mb-8"
                             >
-                                <h2 className="text-lg font-bold text-white mb-4" style={{ fontFamily: 'var(--font-display)' }}>Confidence Over Time</h2>
+                                <h2 className="text-lg font-bold text-[var(--white-full)] mb-4" style={{ fontFamily: 'var(--font-display)' }}>Confidence Over Time</h2>
                                 <ResponsiveContainer width="100%" height={320}>
                                     <LineChart data={chartData} margin={{ top: 20, right: 20, left: 0, bottom: 40 }}>
                                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(55,138,221,0.1)" />

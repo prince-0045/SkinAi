@@ -5,7 +5,7 @@ import DermAuraLogo from './DermAuraLogo';
 
 export default function Footer() {
     return (
-        <footer className="bg-slate-900 text-slate-300">
+        <footer className="bg-[var(--bg-surface)] text-[var(--white-muted)] border-t border-[var(--border-subtle)]">
             {/* Medical Disclaimer */}
             <div className="bg-amber-950/50 border-t border-amber-900/30 py-3 px-4 text-center">
                 <p className="text-xs text-amber-200/80 flex items-center justify-center gap-1.5 flex-wrap">
@@ -23,16 +23,16 @@ export default function Footer() {
                         <div className="flex flex-col items-center justify-center">
                             <DermAuraLogo className="h-16 md:h-20 w-auto mb-2" />
                         </div>
-                        <p className="text-sm text-slate-400">
+                        <p className="text-sm text-[var(--white-faint)]">
                             Advanced skin disease detection and healing tracking powered by AI.
                         </p>
                     </div>
                 </div>
 
-                <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm gap-4">
+                <div className="border-t border-[var(--border-subtle)] mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm gap-4">
                     <p>&copy; {new Date().getFullYear()} DERMAURA. All rights reserved.</p>
                     <div className="flex items-center gap-6">
-                        <Link to="/privacy" className="text-slate-400 hover:text-white transition">Privacy Policy</Link>
+                        <Link to="/privacy" className="text-[var(--blue-soft)] hover:text-[var(--blue-bright)] transition">Privacy Policy</Link>
                         <p className="flex items-center">
                             Made with <Heart className="h-4 w-4 text-red-500 mx-1 fill-current" /> for healthy skin
                         </p>

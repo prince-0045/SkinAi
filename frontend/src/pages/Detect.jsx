@@ -163,7 +163,7 @@ export default function Detect() {
                                 <div className="upload-icon-circle mb-4">
                                     <Upload className="w-8 h-8" />
                                 </div>
-                                <p className="text-lg font-medium text-white" style={{ fontFamily: 'var(--font-display)' }}>Click to upload or drag &amp; drop</p>
+                                <p className="text-lg font-medium text-[var(--white-full)]" style={{ fontFamily: 'var(--font-display)' }}>Click to upload or drag &amp; drop</p>
                                 <p className="text-sm text-[var(--white-muted)] mt-1">SVG, PNG, JPG or GIF (max. 5MB)</p>
                                 {uploadLimit && (
                                     <div className="mt-4 badge-moderate inline-flex items-center gap-2">
@@ -195,7 +195,7 @@ export default function Detect() {
                             <div className="mt-4 p-4 bg-[var(--blue-dim)] border border-[var(--border-subtle)] rounded-xl flex items-start gap-3">
                                 <AlertCircle className="w-5 h-5 text-[var(--blue-bright)] flex-shrink-0 mt-0.5" />
                                 <div>
-                                    <h3 className="text-sm font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>Upload Notice</h3>
+                                    <h3 className="text-sm font-bold text-[var(--white-full)]" style={{ fontFamily: 'var(--font-display)' }}>Upload Notice</h3>
                                     <p className="text-sm text-[var(--white-muted)] mt-1">{error}</p>
                                 </div>
                             </div>
@@ -224,7 +224,7 @@ export default function Detect() {
                                     >
                                         {/* Header */}
                                         <div className="flex items-center justify-between mb-4">
-                                            <h2 className="text-xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>Analysis Result</h2>
+                                            <h2 className="text-xl font-bold text-[var(--white-full)]" style={{ fontFamily: 'var(--font-display)' }}>Analysis Result</h2>
                                             <span className="badge-positive w-max flex items-center gap-1">
                                                 <CheckCircle className="w-3.5 h-3.5" /> Complete
                                             </span>
@@ -337,7 +337,7 @@ export default function Detect() {
                                     <div className="w-16 h-16 bg-[var(--blue-dim)] rounded-full flex items-center justify-center mb-4">
                                         <FileText className="w-8 h-8 text-[var(--blue-bright)]" />
                                     </div>
-                                    <h3 className="text-lg font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>No Analysis Yet</h3>
+                                    <h3 className="text-lg font-bold text-[var(--white-full)]" style={{ fontFamily: 'var(--font-display)' }}>No Analysis Yet</h3>
                                     <p className="max-w-xs mx-auto mt-2 text-[var(--white-muted)] text-sm">
                                         Upload an image to see the AI detection results and personalised do/don't recommendations here.
                                     </p>

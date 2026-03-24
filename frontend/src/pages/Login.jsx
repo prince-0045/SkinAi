@@ -68,7 +68,7 @@ export default function Login() {
         >
             <form onSubmit={handleLogin} className="space-y-6">
                 <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-500 dark:text-gray-400">Email Address</label>
+                    <label htmlFor="email" className="block text-sm font-bold text-[var(--white-soft)]">Email Address</label>
                     <div className="mt-1 relative rounded-md shadow-sm">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <Mail className="h-5 w-5 text-gray-400" />
@@ -87,7 +87,7 @@ export default function Login() {
                 </div>
 
                 <div>
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-500 dark:text-gray-400">Password</label>
+                    <label htmlFor="password" className="block text-sm font-bold text-[var(--white-soft)]">Password</label>
                     <div className="mt-1 relative rounded-md shadow-sm">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <Lock className="h-5 w-5 text-gray-400" />
@@ -131,7 +131,7 @@ export default function Login() {
                         <div className="w-full border-t border-gray-200 dark:border-slate-700" />
                     </div>
                     <div className="relative flex justify-center text-sm">
-                        <span className="px-2 bg-white dark:bg-slate-900 text-gray-500 font-medium italic">Or continue with</span>
+                        <span className="px-2 bg-[var(--bg-base)] text-[var(--white-muted)] font-medium italic">Or continue with</span>
                     </div>
                 </div>
 

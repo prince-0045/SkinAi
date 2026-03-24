@@ -24,11 +24,11 @@
   --blue-soft:      #BFC6C4; /* Mint Gray */
   --blue-dim:       #f0f4f2;
 
-  /* Text Colors (Warm Contrast) */
-  --white-full:     #4a3d3d; /* Dark Warm Earthy Text */
-  --white-soft:     #6b5a5a;
-  --white-muted:    #8a7c7c;
-  --white-faint:    #b5a8a8;
+  /* Text Colors (High Contrast Black) */
+  --white-full:     #000000; /* True Black */
+  --white-soft:     #1a1a1a;
+  --white-muted:    #404040;
+  --white-faint:    #737373;
 }
 
 .dark {

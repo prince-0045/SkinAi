@@ -18,7 +18,7 @@ const FeatureCard = ({ icon: Icon, title, description, delay }) => (
         <div className="w-12 h-12 bg-[var(--blue-dim)] rounded-xl flex items-center justify-center mb-4 text-[var(--blue-bright)]">
             <Icon className="w-6 h-6" />
         </div>
-        <h3 className="text-lg font-bold text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>{title}</h3>
+        <h3 className="text-lg font-bold text-[var(--white-full)] mb-2" style={{ fontFamily: 'var(--font-display)' }}>{title}</h3>
         <p className="text-[var(--white-muted)]">{description}</p>
     </motion.div>
 );
@@ -41,7 +41,7 @@ export default function Landing() {
                 </div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold text-white sm:text-4xl" style={{ fontFamily: 'var(--font-display)' }}>Why Choose DERMAURA?</h2>
+                        <h2 className="text-3xl font-bold text-[var(--white-full)] sm:text-4xl" style={{ fontFamily: 'var(--font-display)' }}>Why Choose DERMAURA?</h2>
                         <p className="mt-4 text-lg text-[var(--white-muted)]">Comprehensive dermatological analysis at your fingertips</p>
                     </div>
 
