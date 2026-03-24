@@ -95,7 +95,7 @@ export default function Signup() {
                             type="text"
                             id="name"
                             required
-                            className="input-field block w-full pl-10 sm:text-sm"
+                            className="input-field block w-full pl-10 py-3 sm:text-sm"
                             placeholder="John Doe"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
@@ -113,7 +113,7 @@ export default function Signup() {
                             type="email"
                             id="email"
                             required
-                            className="input-field block w-full pl-10 sm:text-sm"
+                            className="input-field block w-full pl-10 py-3 sm:text-sm"
                             placeholder="you@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -131,7 +131,7 @@ export default function Signup() {
                             type={showPassword ? "text" : "password"}
                             id="password"
                             required
-                            className="input-field block w-full pl-10 pr-10 sm:text-sm"
+                            className="input-field block w-full pl-10 pr-10 py-3 sm:text-sm"
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}

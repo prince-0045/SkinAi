@@ -78,7 +78,7 @@ export default function Login() {
                             name="email"
                             id="email"
                             required
-                            className="input-field block w-full pl-10 sm:text-sm"
+                            className="input-field block w-full pl-10 py-3 sm:text-sm"
                             placeholder="you@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -97,7 +97,7 @@ export default function Login() {
                             name="password"
                             id="password"
                             required
-                            className="input-field block w-full pl-10 pr-10 sm:text-sm"
+                            className="input-field block w-full pl-10 pr-10 py-3 sm:text-sm"
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}

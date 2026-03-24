@@ -248,7 +248,6 @@ h1, h2, h3, .logo-text, .page-title {
   border: 1px solid var(--border-subtle);
   color: var(--white-full);
   border-radius: 12px;
-  padding: 12px 14px;
   transition: all 0.25s ease;
   font-family: var(--font-body);
 }
