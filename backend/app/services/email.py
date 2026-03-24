@@ -1,7 +1,7 @@
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
+import boto3
+from botocore.exceptions import ClientError
 from app.core.config import settings
 from pydantic import EmailStr
-from pathlib import Path
 
 # --- NEW: AWS SES SDK Logic (Bypasses Port Blocking) ---
 ses_client = boto3.client(
@@ -25,14 +25,13 @@ ses_client = boto3.client(
 #     VALIDATE_CERTS=False
 # )
 
-
 async def send_otp_email(email: EmailStr, otp: str):
     print(f"Attempting to send OTP email via AWS SES to {email}")
     html = f"""
     <html>
         <body>
             <div style="font-family: Arial, sans-serif; padding: 20px;">
-                <h2>Verify your SkinCare AI Account</h2>
+                <h2>Verify your DermAura Account</h2>
                 <p>Your verification code is:</p>
                 <h1 style="color: #4A90E2;">{otp}</h1>
                 <p>This code expires in 10 minutes.</p>
@@ -44,10 +43,10 @@ async def send_otp_email(email: EmailStr, otp: str):
     # --- AWS SES Implementation ---
     try:
         response = ses_client.send_email(
-            Source=settings.MAIL_FROM,
+            Source=f"DermAura <{settings.MAIL_FROM}>",
             Destination={'ToAddresses': [email]},
             Message={
-                'Subject': {'Data': 'SkinCare AI - Verification Code'},
+                'Subject': {'Data': 'DermAura - Verification Code'},
                 'Body': {
                     'Html': {'Data': html}
                 }
@@ -63,54 +62,44 @@ async def send_otp_email(email: EmailStr, otp: str):
 
     # --- OLD SMTP IMPLEMENTATION (Commented) ---
     # message = MessageSchema(
-    #     subject="SkinCare AI - Verification Code",
+    #     subject="DermAura - Verification Code",
     #     recipients=[email],
     #     body=html,
     #     subtype=MessageType.html,
     # )
     # fm = FastMail(conf)
-    # try:
-    #     print(f"DEBUG: Connection Config: {conf.MAIL_SERVER}:{conf.MAIL_PORT}, User={conf.MAIL_USERNAME}")
-    #     await fm.send_message(message)
-    #     print("Email sent successfully")
-    # except Exception as e:
-    #     print(f"Error sending email: {e}")
-    #     import traceback
-    #     traceback.print_exc()
-    #     raise e
-
+    # await fm.send_message(message)
 
 async def send_welcome_email(email: EmailStr, name: str):
     html = f"""
     <html>
         <body>
             <div style="font-family: Arial, sans-serif; padding: 20px;">
-                <h2>Welcome to SkinCare AI!</h2>
+                <h2>Welcome to DermAura!</h2>
                 <p>Hi {name},</p>
                 <p>Thank you for joining our community. We are excited to help you on your journey to better skin health.</p>
             </div>
         </body>
     </html>
     """
-
+    
     # --- AWS SES Implementation ---
     try:
-        response = ses_client.send_email(
-            Source=settings.MAIL_FROM,
+        ses_client.send_email(
+            Source=f"DermAura <{settings.MAIL_FROM}>",
             Destination={'ToAddresses': [email]},
             Message={
-                'Subject': {'Data': 'Welcome to SkinCare AI'},
+                'Subject': {'Data': 'Welcome to DermAura'},
                 'Body': {
                     'Html': {'Data': html}
                 }
             }
         )
-        print(f"SUCCESS: Welcome email sent via SES. Message ID: {response['MessageId']}")
+        print("SUCCESS: Welcome email sent via SES")
     except Exception as e:
         print(f"Error sending welcome email via SES: {e}")
-        # Not raising here to prevent signup flow from breaking if welcome email fails
 
     # --- OLD SMTP IMPLEMENTATION (Commented) ---
-    # message = MessageSchema(...)
+    # message = MessageSchema(subject="Welcome to DermAura", recipients=[email], body=html, subtype=MessageType.html)
     # fm = FastMail(conf)
     # await fm.send_message(message)
