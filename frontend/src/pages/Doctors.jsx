@@ -5,7 +5,7 @@ import { MapPin } from 'lucide-react';
 
 export default function Doctors() {
     return (
-        <div className="bg-base min-h-screen transition-colors duration-300 pt-24 pb-12">
+        <div className="bg-[var(--bg-base)] min-h-screen transition-colors duration-300 pt-24 pb-12">
             <Helmet>
                 <title>Find Doctors - DERMAURA</title>
             </Helmet>

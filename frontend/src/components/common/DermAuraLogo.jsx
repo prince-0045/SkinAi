@@ -49,7 +49,7 @@ export default function DermAuraLogo({ className = '' }) {
             fontFamily="'Arial Black', 'Helvetica Neue', Arial, sans-serif"
             fontSize="82" fontWeight="700"
             letterSpacing="-3">
-        <tspan fill="#ffffff">Derm</tspan><tspan fill="#4fa8f0">Aura</tspan>
+        <tspan fill="var(--white-full)">Derm</tspan><tspan fill="#4fa8f0">Aura</tspan>
       </text>
 
     </svg>

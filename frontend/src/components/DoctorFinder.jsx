@@ -55,7 +55,7 @@ export default function DoctorFinder() {
         <div className="panel card">
             <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h3 className="text-lg font-bold text-white flex items-center" style={{ fontFamily: 'var(--font-display)' }}>
+                    <h3 className="text-lg font-bold text-[var(--white-full)] flex items-center" style={{ fontFamily: 'var(--font-display)' }}>
                         <MapPin className="w-5 h-5 text-[var(--blue-bright)] mr-2" />
                         Find Dermatologists Nearby
                     </h3>
@@ -101,7 +101,7 @@ export default function DoctorFinder() {
             {hasSearched && !error && (
                 <div className="px-6 pb-6 pt-4 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)]">
                     <h4 className="text-sm font-semibold text-[var(--white-muted)] mb-4 uppercase tracking-wider flex items-center">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS" className="h-4 mr-2 object-contain brightness-0 invert opacity-70" />
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS" className="h-4 mr-2 object-contain brightness-0 dark:invert opacity-70" />
                         Search Results from AWS Location Service
                     </h4>
                     {doctors.length > 0 ? (

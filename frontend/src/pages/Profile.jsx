@@ -129,7 +129,7 @@ export default function Profile() {
                                 <User className="w-10 h-10" />
                             </div>
                             <div className="text-center sm:text-left pb-1">
-                                <h1 className="profile-name text-2xl sm:text-4xl font-extrabold text-white tracking-tight" style={{ fontFamily: 'var(--font-display)' }}>
+                                <h1 className="profile-name text-2xl sm:text-4xl font-extrabold text-[var(--white-full)] tracking-tight" style={{ fontFamily: 'var(--font-display)' }}>
                                     {userData.name}
                                 </h1>
                                 <div className="mt-3 flex flex-wrap justify-center sm:justify-start gap-x-5 gap-y-2">
@@ -210,7 +210,7 @@ export default function Profile() {
 
                         {activeTab === 'security' && (
                             <div className="history-list-section pt-4">
-                                <div className="bg-[#1a3a6e]/20 p-4 rounded-xl flex items-start border border-[var(--border-subtle)]">
+                                <div className="bg-[var(--blue-dim)] p-4 rounded-xl flex items-start border border-[var(--border-subtle)]">
                                     <Shield className="w-5 h-5 text-[var(--blue-bright)] mt-0.5 mr-3 flex-shrink-0" />
                                     <div>
                                         <h4 className="text-[var(--blue-bright)] font-medium text-sm" style={{ fontFamily: 'var(--font-display)' }}>Medical Privacy Disclaimer</h4>
@@ -221,7 +221,7 @@ export default function Profile() {
                                 </div>
 
                                 <div className="mt-6 panel p-5 card">
-                                    <h4 className="font-medium text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>Account Security</h4>
+                                    <h4 className="font-medium text-[var(--white-full)] mb-2" style={{ fontFamily: 'var(--font-display)' }}>Account Security</h4>
                                     <p className="text-sm text-[var(--white-muted)] mb-4">Manage your password and authentication methods.</p>
                                     <button
                                         onClick={() => setIsChangePasswordOpen(true)}
@@ -246,7 +246,7 @@ export default function Profile() {
                                 <X className="w-5 h-5" />
                             </button>
 
-                            <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: 'var(--font-display)' }}>Change Password</h2>
+                            <h2 className="text-2xl font-bold text-[var(--white-full)] mb-6" style={{ fontFamily: 'var(--font-display)' }}>Change Password</h2>
 
                             {changePasswordStatus.message && (
                                 <div className={`mb-6 p-4 rounded-xl text-sm border font-medium ${changePasswordStatus.type === 'success'
