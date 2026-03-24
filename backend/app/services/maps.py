@@ -6,7 +6,7 @@ async def find_nearby_dermatologists(lat: float, lng: float, radius: int = 5000)
     """
     Finds places near coordinates using Amazon Geo Places API (v2) with API Key.
     """
-    api_key = settings.AWS_ACCESS_KEY_ID # User will paste API Key here
+    api_key = settings.AWS_MAPS_API_KEY
     region = settings.AWS_REGION
     
     if not api_key:
