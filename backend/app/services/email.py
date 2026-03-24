@@ -1,21 +1,16 @@
-import boto3
-from botocore.exceptions import ClientError
+import resend
 from app.core.config import settings
 from pydantic import EmailStr
 import logging
 
 logger = logging.getLogger(__name__)
 
-# --- AWS SES SDK Logic (Bypasses VPS Port Blocking) ---
-ses_client = boto3.client(
-    'ses',
-    region_name=settings.AWS_REGION,
-    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
-)
+# --- Resend API Configuration (Bypasses VPS Port Blocking) ---
+if settings.RESEND_API_KEY:
+    resend.api_key = settings.RESEND_API_KEY
 
 async def send_otp_email(email: EmailStr, otp: str):
-    logger.info(f"Attempting to send OTP email via AWS SES to {email}")
+    logger.info(f"Attempting to send OTP email via Resend to {email}")
     html = f"""
     <html>
         <body>
@@ -30,22 +25,20 @@ async def send_otp_email(email: EmailStr, otp: str):
     """
 
     try:
-        response = ses_client.send_email(
-            Source=f"DermAura <{settings.MAIL_FROM}>",
-            Destination={'ToAddresses': [email]},
-            Message={
-                'Subject': {'Data': 'DermAura - Verification Code'},
-                'Body': {
-                    'Html': {'Data': html}
-                }
-            }
-        )
-        logger.info(f"SUCCESS: Email sent via SES. Message ID: {response['MessageId']}")
-    except ClientError as e:
-        logger.error(f"SES ERROR: {e.response['Error']['Message']}")
-        raise e
+        if not settings.RESEND_API_KEY:
+            raise ValueError("RESEND_API_KEY is not set in environment")
+
+        params = {
+            "from": f"DermAura <{settings.MAIL_FROM}>",
+            "to": [email],
+            "subject": "DermAura - Verification Code",
+            "html": html,
+        }
+        
+        response = resend.Emails.send(params)
+        logger.info(f"SUCCESS: Email sent via Resend. ID: {response.get('id')}")
     except Exception as e:
-        logger.error(f"General Error sending email: {e}")
+        logger.error(f"Resend Delivery Error: {e}")
         raise e
 
 async def send_welcome_email(email: EmailStr, name: str):
@@ -62,16 +55,16 @@ async def send_welcome_email(email: EmailStr, name: str):
     """
     
     try:
-        ses_client.send_email(
-            Source=f"DermAura <{settings.MAIL_FROM}>",
-            Destination={'ToAddresses': [email]},
-            Message={
-                'Subject': {'Data': 'Welcome to DermAura'},
-                'Body': {
-                    'Html': {'Data': html}
-                }
-            }
-        )
-        logger.info("SUCCESS: Welcome email sent via SES")
+        if not settings.RESEND_API_KEY:
+            return
+
+        params = {
+            "from": f"DermAura <{settings.MAIL_FROM}>",
+            "to": [email],
+            "subject": "Welcome to DermAura",
+            "html": html,
+        }
+        resend.Emails.send(params)
+        logger.info("SUCCESS: Welcome email sent via Resend")
     except Exception as e:
-        logger.error(f"Error sending welcome email via SES: {e}")
+        logger.error(f"Error sending welcome email via Resend: {e}")

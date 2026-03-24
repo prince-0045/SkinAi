@@ -22,6 +22,7 @@ cloudinary
 tensorflow-cpu
 tf-keras
 boto3
+resend
 slowapi
 pytest
 pytest-asyncio
