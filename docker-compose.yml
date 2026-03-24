@@ -8,14 +8,12 @@ services:
     # Read ALL environment variables from the .env file
     env_file:
       - .env
-    environment:
-      # You can still hardcode specific overrides here if needed
-      - FRONTEND_URL=http://localhost:3000
 
   frontend:
     build:
       context: ./frontend
       args:
+        # These are used at BUILD TIME for the React build
         VITE_API_URL: http://localhost:8000
     ports:
       - "3000:80"

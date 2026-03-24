@@ -25,10 +25,10 @@ export default function DoctorFinder() {
                     maximumAge: 300000
                 });
             });
-            
+
             const { latitude, longitude } = position.coords;
             const API_BASE_URL = import.meta.env.VITE_API_URL || '';
-            
+
             const response = await fetch(`${API_BASE_URL}/api/v1/doctors/nearby`, {
                 method: 'POST',
                 headers: {
@@ -40,7 +40,7 @@ export default function DoctorFinder() {
             if (!response.ok) {
                 throw new Error('Failed to fetch dermatologists from the server.');
             }
-            
+
             const data = await response.json();
             setDoctors(data);
             setHasSearched(true);
@@ -52,14 +52,14 @@ export default function DoctorFinder() {
     };
 
     return (
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden transition-colors duration-300">
+        <div className="panel card">
             <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
-                        <MapPin className="w-5 h-5 text-medical-600 dark:text-medical-400 mr-2" />
+                    <h3 className="text-lg font-bold text-white flex items-center" style={{ fontFamily: 'var(--font-display)' }}>
+                        <MapPin className="w-5 h-5 text-[var(--blue-bright)] mr-2" />
                         Find Dermatologists Nearby
                     </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="text-sm text-[var(--white-muted)] mt-1">
                         Use AWS Location Service to locate professionals directly, or open Google Maps.
                     </p>
                 </div>
@@ -67,14 +67,14 @@ export default function DoctorFinder() {
                     <button
                         onClick={findAwsDoctors}
                         disabled={loading}
-                        className="flex-1 sm:flex-none justify-center bg-medical-600 hover:bg-medical-700 text-white px-5 py-2.5 rounded-lg font-medium transition-all shadow-sm flex items-center disabled:opacity-50 whitespace-nowrap"
+                        className="btn-primary flex items-center justify-center disabled:opacity-50"
                     >
                         {loading ? <Loader className="w-4 h-4 mr-2 animate-spin" /> : <Navigation className="w-4 h-4 mr-2" />}
                         {loading ? 'Searching AWS...' : 'Find Near Me'}
                     </button>
                     <button
                         onClick={openGoogleMaps}
-                        className="flex-1 sm:flex-none justify-center px-5 py-2.5 border-2 border-gray-200 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition flex items-center font-medium whitespace-nowrap"
+                        className="btn-secondary flex items-center justify-center"
                         title="Open directly in Google Maps"
                     >
                         <MapIcon className="w-4 h-4 mr-2" />
@@ -85,11 +85,11 @@ export default function DoctorFinder() {
 
             {error && (
                 <div className="px-6 pb-4">
-                    <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 text-sm rounded-lg border border-red-200 dark:border-red-800 flex justify-between items-center sm:flex-row flex-col gap-2">
+                    <div className="p-3 bg-[var(--blue-dim)] text-[var(--white-soft)] text-sm rounded-lg border border-[var(--border-subtle)] flex justify-between items-center sm:flex-row flex-col gap-2">
                         <span className="text-center sm:text-left">{error}</span>
                         <button
                             onClick={openGoogleMaps}
-                            className="text-red-600 dark:text-red-300 font-semibold underline text-xs whitespace-nowrap"
+                            className="text-[var(--blue-bright)] font-semibold underline text-xs whitespace-nowrap"
                         >
                             Or open Google Maps directly
                         </button>
@@ -99,38 +99,38 @@ export default function DoctorFinder() {
 
             {/* Inline AWS Doctors Results */}
             {hasSearched && !error && (
-                <div className="px-6 pb-6 pt-4 border-t border-gray-100 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800/30">
-                    <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 uppercase tracking-wider flex items-center">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS" className="h-4 mr-2 object-contain dark:brightness-0 dark:invert" />
+                <div className="px-6 pb-6 pt-4 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)]">
+                    <h4 className="text-sm font-semibold text-[var(--white-muted)] mb-4 uppercase tracking-wider flex items-center">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS" className="h-4 mr-2 object-contain brightness-0 invert opacity-70" />
                         Search Results from AWS Location Service
                     </h4>
                     {doctors.length > 0 ? (
                         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                             {doctors.map((doc, idx) => (
-                                <div key={idx} className="p-4 rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 hover:shadow-md hover:border-medical-300 dark:hover:border-medical-700 transition-all group">
-                                    <h5 className="font-semibold text-gray-900 dark:text-white text-[15px] leading-snug group-hover:text-medical-600 dark:group-hover:text-medical-400 transition-colors">{doc.name}</h5>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 flex items-start leading-relaxed">
-                                        <MapPin className="w-3.5 h-3.5 mr-1.5 mt-1 flex-shrink-0 text-gray-400" />
+                                <div key={idx} className="doctor-card">
+                                    <h3>{doc.name}</h3>
+                                    <p className="text-sm text-[var(--white-muted)] mt-2 flex items-start leading-relaxed">
+                                        <MapPin className="w-3.5 h-3.5 mr-1.5 mt-1 flex-shrink-0 opacity-60" />
                                         {doc.address || 'Address not listed'}
                                     </p>
-                                    
-                                    <div className="mt-4 pt-3 border-t border-gray-100 dark:border-slate-700">
+
+                                    <div className="mt-4 pt-3 border-t border-[var(--border-subtle)]">
                                         <a
                                             href={`https://www.google.com/maps/search/?api=1&query=${doc.geometry?.location?.lat},${doc.geometry?.location?.lng}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-medical-600 dark:text-medical-400 text-sm font-medium hover:underline flex items-center w-max"
+                                            className="view-directions-link"
                                         >
-                                            View Directions <ExternalLink className="w-3 h-3 ml-1.5" />
+                                            View Directions <ExternalLink className="w-3 h-3" />
                                         </a>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-8 bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-600 shadow-sm">
-                            <p className="text-gray-500 dark:text-gray-400 font-medium">No dermatologists found nearby via AWS.</p>
-                            <button onClick={openGoogleMaps} className="mt-3 text-white bg-medical-600 hover:bg-medical-700 px-4 py-2 rounded-md font-medium text-sm transition-colors mx-auto flex items-center">
+                        <div className="text-center py-8 rounded-xl border border-[var(--border-subtle)] shadow-sm bg-[var(--bg-card)]">
+                            <p className="text-[var(--white-muted)] font-medium">No dermatologists found nearby via AWS.</p>
+                            <button onClick={openGoogleMaps} className="btn-primary mt-3 flex items-center mx-auto text-sm">
                                 <MapIcon className="w-3.5 h-3.5 mr-1.5" />
                                 Search broadly on Google Maps
                             </button>

@@ -4,11 +4,11 @@ import { Shield, Database, Eye, Trash2, Mail, Clock } from 'lucide-react';
 
 const Section = ({ icon: Icon, title, children }) => (
     <div className="mb-8">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
-            <Icon className="w-5 h-5 text-medical-600" />
+        <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-4" style={{ fontFamily: 'var(--font-display)' }}>
+            <Icon className="w-5 h-5 text-[var(--blue-bright)]" />
             {title}
         </h2>
-        <div className="text-gray-600 dark:text-gray-400 space-y-3 leading-relaxed">
+        <div className="text-[var(--white-muted)] space-y-3 leading-relaxed">
             {children}
         </div>
     </div>
@@ -16,24 +16,24 @@ const Section = ({ icon: Icon, title, children }) => (
 
 export default function Privacy() {
     return (
-        <div className="bg-[#0d1117] bg-navy-mesh min-h-screen transition-colors duration-300 pt-24 pb-12">
+        <div className="bg-base min-h-screen transition-colors duration-300 pt-24 pb-12">
             <Helmet>
                 <title>Privacy Policy - DERMAURA</title>
                 <meta name="description" content="DERMAURA privacy policy — how we handle your data." />
             </Helmet>
 
             <div className="max-w-3xl mx-auto px-4 sm:px-6">
-                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-8 md:p-12">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Privacy Policy</h1>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+                <div className="card p-8 md:p-12">
+                    <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>Privacy Policy</h1>
+                    <p className="text-sm text-[var(--white-muted)] mb-8">Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
 
                     <Section icon={Shield} title="Overview">
                         <p>
                             DERMAURA is an AI-powered skin analysis tool designed for educational and informational purposes.
                             We are committed to protecting your privacy and handling your data responsibly.
                         </p>
-                        <p className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 text-amber-800 dark:text-amber-200 text-sm">
-                            <strong>Important:</strong> DERMAURA is NOT a medical device and does NOT provide medical diagnoses.
+                        <p className="bg-[var(--blue-dim)] border border-[var(--border-subtle)] rounded-lg p-3 text-white text-sm">
+                            <strong className="text-[var(--blue-bright)]">Important:</strong> DERMAURA is NOT a medical device and does NOT provide medical diagnoses.
                             Always consult a qualified healthcare professional for medical advice.
                         </p>
                     </Section>

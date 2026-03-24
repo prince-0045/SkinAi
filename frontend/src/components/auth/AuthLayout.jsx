@@ -36,9 +36,9 @@ export default function AuthLayout({ children, title, subtitle }) {
                 <div className="absolute inset-0 opacity-20 transform scale-150 rotate-45 pointer-events-none">
                     <DNAHelix className="w-full h-full text-white" />
                 </div>
-                
+
                 <div className="relative z-10 w-full flex flex-col items-center">
-                    <motion.div 
+                    <motion.div
                         className="text-center bg-slate-900/50 backdrop-blur-md p-8 rounded-2xl border border-white/10"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -46,7 +46,7 @@ export default function AuthLayout({ children, title, subtitle }) {
                     >
                         <h3 className="text-3xl font-bold text-white mb-4">Advanced AI Analysis</h3>
                         <p className="text-gray-400 text-lg max-w-sm mx-auto">Join thousands of users tracking their healing journey with clinical-grade precision.</p>
-                        
+
                         <div className="mt-8 grid grid-cols-2 gap-4 text-left">
                             <div className="bg-white/5 p-4 rounded-xl border border-white/10">
                                 <div className="text-2xl font-bold text-white mb-1">98%</div>

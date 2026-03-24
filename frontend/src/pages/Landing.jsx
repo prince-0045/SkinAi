@@ -9,23 +9,23 @@ import DNAHelix from '../components/animations/DNAHelix';
 
 const FeatureCard = ({ icon: Icon, title, description, delay }) => (
     <motion.div
-        className="relative p-6 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow"
+        className="card p-6"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay, duration: 0.5 }}
     >
-        <div className="w-12 h-12 bg-medical-50 rounded-xl flex items-center justify-center mb-4 text-medical-600">
+        <div className="w-12 h-12 bg-[var(--blue-dim)] rounded-xl flex items-center justify-center mb-4 text-[var(--blue-bright)]">
             <Icon className="w-6 h-6" />
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
-        <p className="text-gray-500 dark:text-gray-400">{description}</p>
+        <h3 className="text-lg font-bold text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>{title}</h3>
+        <p className="text-[var(--white-muted)]">{description}</p>
     </motion.div>
 );
 
 export default function Landing() {
     return (
-        <div className="bg-[#0d1117] bg-navy-mesh min-h-screen transition-colors duration-300">
+        <div className="bg-base min-h-screen transition-colors duration-300">
             <Helmet>
                 <title>DERMAURA - Advanced Skin Disease Detection</title>
                 <meta name="description" content="AI-powered skin disease detection and healing tracker." />
@@ -35,14 +35,14 @@ export default function Landing() {
             <FeatureCarousel />
 
             {/* Features Section - Inline for now or separate later */}
-            <section className="relative py-24 bg-white dark:bg-slate-900 transition-colors duration-300 overflow-hidden">
+            <section className="relative py-24 bg-[var(--bg-surface)] border-t border-[var(--border-subtle)] transition-colors duration-300 overflow-hidden">
                 <div className="absolute -left-20 top-0 opacity-10 pointer-events-none">
-                    <DNAHelix className="w-[600px] h-[600px] text-medical-600 dark:text-medical-400" />
+                    <DNAHelix className="w-[600px] h-[600px] text-[#378ADD]" />
                 </div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">Why Choose DERMAURA?</h2>
-                        <p className="mt-4 text-lg text-gray-500">Comprehensive dermatological analysis at your fingertips</p>
+                        <h2 className="text-3xl font-bold text-white sm:text-4xl" style={{ fontFamily: 'var(--font-display)' }}>Why Choose DERMAURA?</h2>
+                        <p className="mt-4 text-lg text-[var(--white-muted)]">Comprehensive dermatological analysis at your fingertips</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

@@ -115,115 +115,117 @@ export default function Profile() {
     };
 
     return (
-        <div className="bg-[#0d1117] bg-navy-mesh min-h-screen transition-colors duration-300 pt-24 pb-12">
+        <div className="bg-base min-h-screen transition-colors duration-300 pt-24 pb-12">
             <Helmet>
                 <title>Profile - DERMAURA</title>
             </Helmet>
 
-            <div className="max-w-4xl mx-auto px-4 sm:px-6">
-                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden transition-colors duration-300">
-                    {/* Header */}
-                    <div className="bg-medical-900 h-32 relative">
-                        <div className="absolute -bottom-12 left-8">
-                            <div className="w-24 h-24 bg-white rounded-full p-1 shadow-lg pointer-events-none select-none">
-                                <div className="w-full h-full bg-medical-100 rounded-full flex items-center justify-center text-medical-600">
-                                    <User className="w-10 h-10" />
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 page-enter">
+                <div className="profile-page-wrapper">
+                    {/* Header Banner with Integrated Info */}
+                    <div className="profile-banner flex flex-col sm:flex-row items-center sm:items-end justify-between px-6 sm:px-10 pb-8 pt-10 gap-6">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 w-full">
+                            <div className="profile-avatar shadow-2xl flex-shrink-0">
+                                <User className="w-10 h-10" />
+                            </div>
+                            <div className="text-center sm:text-left pb-1">
+                                <h1 className="profile-name text-2xl sm:text-4xl font-extrabold text-white tracking-tight" style={{ fontFamily: 'var(--font-display)' }}>
+                                    {userData.name}
+                                </h1>
+                                <div className="mt-3 flex flex-wrap justify-center sm:justify-start gap-x-5 gap-y-2">
+                                    <span className="profile-email flex items-center gap-2 text-[var(--white-muted)] text-sm font-medium">
+                                        <Mail className="w-4 h-4 text-[var(--blue-bright)]" /> {userData.email}
+                                    </span>
+                                    <span className="profile-member-since flex items-center gap-2 text-[var(--white-muted)] text-sm font-medium">
+                                        <Calendar className="w-4 h-4 text-[var(--blue-bright)]" /> Member since {userData.memberSince}
+                                    </span>
                                 </div>
                             </div>
+                        </div>
+                        <div className="pb-1 sm:pb-2 flex-shrink-0">
+                            <button
+                                onClick={handleLogout}
+                                className="logout-btn-profile"
+                            >
+                                <LogOut className="w-4 h-4" /> Logout
+                            </button>
                         </div>
                     </div>
 
-                    <div className="pt-16 pb-8 px-8">
-                        <div className="flex justify-between items-start mb-6">
-                            <div>
-                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{userData.name}</h1>
-                                <div className="flex items-center text-gray-500 dark:text-gray-400 mt-1 space-x-4 text-sm">
-                                    <span className="flex items-center"><Mail className="w-4 h-4 mr-1" /> {userData.email}</span>
-                                    <span className="flex items-center"><Calendar className="w-4 h-4 mr-1" /> Member since {userData.memberSince}</span>
-                                </div>
-                            </div>
+                    <div className="profile-body px-4 sm:px-8 pb-8">
+
+                        <div className="profile-tabs flex mt-2">
                             <button
-                                onClick={handleLogout}
-                                className="flex items-center px-4 py-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition"
+                                onClick={() => setActiveTab('history')}
+                                className={`profile-tab ${activeTab === 'history' ? 'active' : ''}`}
                             >
-                                <LogOut className="w-4 h-4 mr-2" /> Logout
+                                Detection History
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('security')}
+                                className={`profile-tab ${activeTab === 'security' ? 'active' : ''}`}
+                            >
+                                Security & Privacy
                             </button>
                         </div>
 
-                        <div className="border-b border-gray-200 dark:border-slate-700 mb-8">
-                            <nav className="-mb-px flex space-x-8">
-                                <button
-                                    onClick={() => setActiveTab('history')}
-                                    className={`${activeTab === 'history' ? 'border-medical-500 text-medical-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-                                >
-                                    Detection History
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab('security')}
-                                    className={`${activeTab === 'security' ? 'border-medical-500 text-medical-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-                                >
-                                    Security & Privacy
-                                </button>
-                            </nav>
-                        </div>
-
                         {activeTab === 'history' && (
-                            <div className="space-y-4">
+                            <div className="history-list-section">
                                 {loading ? (
-                                    <div className="text-center py-8 text-gray-500">Loading history...</div>
+                                    <div className="text-center py-8 text-[var(--white-faint)]">Loading history...</div>
                                 ) : history.length > 0 ? (
                                     history.map((item) => (
-                                        <div key={item.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100 hover:border-medical-200 transition">
-                                            <div className="flex items-center">
-                                                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-gray-200 mr-4">
-                                                    <Clock className="w-5 h-5 text-gray-400" />
+                                        <div key={item.id} className="history-item">
+                                            <div className="flex items-center gap-3">
+                                                <div className="history-clock-icon">
+                                                    <Clock className="w-5 h-5" />
                                                 </div>
                                                 <div>
-                                                    <p className="font-semibold text-gray-900">{item.result}</p>
-                                                    <p className="text-sm text-gray-500">{item.type} • {item.date}</p>
+                                                    <p className="history-item-title">{item.result}</p>
+                                                    <p className="history-item-subtitle">{item.type} • {item.date}</p>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-3">
                                                 <button
                                                     onClick={() => downloadMedicalReport(item, user)}
-                                                    className="p-2 text-medical-600 hover:bg-medical-50 rounded-lg transition"
+                                                    className="history-download-btn"
                                                     title="Download Report"
                                                 >
-                                                    <Download className="w-4 h-4" />
+                                                    <Download className="w-5 h-5" />
                                                 </button>
-                                                <span className="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-600">
+                                                <span className={item.status === 'Detected' ? 'history-badge-detected' : 'history-badge-not-detected'}>
                                                     {item.status}
                                                 </span>
                                             </div>
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="text-center py-8 text-gray-500">No scan history found.</div>
+                                    <div className="text-center py-8 text-[var(--white-faint)]">No scan history found.</div>
                                 )}
                                 <div className="mt-4 text-center">
-                                    <Link to="/track" className="text-medical-600 font-medium hover:underline text-sm">View full analytics</Link>
+                                    <Link to="/track" className="view-analytics-link">View full analytics</Link>
                                 </div>
                             </div>
                         )}
 
                         {activeTab === 'security' && (
-                            <div className="space-y-6">
-                                <div className="bg-blue-50 p-4 rounded-lg flex items-start">
-                                    <Shield className="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
+                            <div className="history-list-section pt-4">
+                                <div className="bg-[#1a3a6e]/20 p-4 rounded-xl flex items-start border border-[var(--border-subtle)]">
+                                    <Shield className="w-5 h-5 text-[var(--blue-bright)] mt-0.5 mr-3 flex-shrink-0" />
                                     <div>
-                                        <h4 className="text-blue-900 font-medium text-sm">Medical Privacy Disclaimer</h4>
-                                        <p className="text-blue-700 text-sm mt-1">
+                                        <h4 className="text-[var(--blue-bright)] font-medium text-sm" style={{ fontFamily: 'var(--font-display)' }}>Medical Privacy Disclaimer</h4>
+                                        <p className="text-[var(--white-muted)] text-sm mt-1">
                                             Your data is encrypted and stored securely compliant with HIPAA guidelines. We do not share your personal health information with third parties without your explicit consent.
                                         </p>
                                     </div>
                                 </div>
 
-                                <div>
-                                    <h4 className="font-medium text-gray-900 dark:text-white mb-2">Account Security</h4>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Manage your password and authentication methods.</p>
+                                <div className="mt-6 panel p-5 card">
+                                    <h4 className="font-medium text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>Account Security</h4>
+                                    <p className="text-sm text-[var(--white-muted)] mb-4">Manage your password and authentication methods.</p>
                                     <button
                                         onClick={() => setIsChangePasswordOpen(true)}
-                                        className="text-medical-600 text-sm font-medium hover:bg-medical-50 px-3 py-2 rounded-lg -ml-3 transition"
+                                        className="btn-secondary text-sm"
                                     >
                                         Change Password
                                     </button>
@@ -235,80 +237,82 @@ export default function Profile() {
 
                 {/* Change Password Modal */}
                 {isChangePasswordOpen && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                        <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
+                    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                        <div className="card max-w-md w-full p-8 relative border border-[var(--border-subtle)] shadow-2xl">
                             <button
                                 onClick={() => setIsChangePasswordOpen(false)}
-                                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                                className="absolute top-4 right-4 text-[var(--white-muted)] hover:text-white transition-colors"
                             >
                                 <X className="w-5 h-5" />
                             </button>
 
-                            <h2 className="text-xl font-bold text-gray-900 mb-4">Change Password</h2>
+                            <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: 'var(--font-display)' }}>Change Password</h2>
 
                             {changePasswordStatus.message && (
-                                <div className={`mb-4 p-3 rounded-lg text-sm ${changePasswordStatus.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                                <div className={`mb-6 p-4 rounded-xl text-sm border font-medium ${changePasswordStatus.type === 'success'
+                                        ? 'bg-[var(--blue-dim)] border-[var(--blue-bright)] text-[var(--blue-bright)]'
+                                        : 'bg-red-500/10 border-red-500/30 text-red-400'
                                     }`}>
                                     {changePasswordStatus.message}
                                 </div>
                             )}
 
-                            <form onSubmit={handleChangePassword} className="space-y-4">
+                            <form onSubmit={handleChangePassword} className="space-y-5">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                                    <label className="block text-sm font-medium text-[var(--white-muted)] mb-2">Current Password</label>
                                     <div className="relative">
                                         <input
                                             type={showPasswords ? "text" : "password"}
                                             required
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-medical-500 outline-none transition text-gray-900 bg-white"
+                                            className="input-field w-full pr-10"
                                             value={changePasswordForm.currentPassword}
                                             onChange={(e) => setChangePasswordForm({ ...changePasswordForm, currentPassword: e.target.value })}
                                         />
-                                        <button 
-                                            type="button" 
+                                        <button
+                                            type="button"
                                             onClick={() => setShowPasswords(!showPasswords)}
-                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--white-faint)] hover:text-white transition"
                                         >
                                             {showPasswords ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                         </button>
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                    <label className="block text-sm font-medium text-[var(--white-muted)] mb-2">New Password</label>
                                     <div className="relative">
                                         <input
                                             type={showPasswords ? "text" : "password"}
                                             required
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-medical-500 outline-none transition text-gray-900 bg-white"
+                                            className="input-field w-full"
                                             value={changePasswordForm.newPassword}
                                             onChange={(e) => setChangePasswordForm({ ...changePasswordForm, newPassword: e.target.value })}
                                         />
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                                    <label className="block text-sm font-medium text-[var(--white-muted)] mb-2">Confirm New Password</label>
                                     <div className="relative">
                                         <input
                                             type={showPasswords ? "text" : "password"}
                                             required
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-medical-500 outline-none transition text-gray-900 bg-white"
+                                            className="input-field w-full"
                                             value={changePasswordForm.confirmPassword}
                                             onChange={(e) => setChangePasswordForm({ ...changePasswordForm, confirmPassword: e.target.value })}
                                         />
                                     </div>
                                 </div>
 
-                                <div className="flex justify-end space-x-3 pt-2">
+                                <div className="flex justify-end space-x-4 pt-4">
                                     <button
                                         type="button"
                                         onClick={() => setIsChangePasswordOpen(false)}
-                                        className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                                        className="btn-secondary py-2.5 px-6"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
-                                        className="px-4 py-2 bg-medical-600 text-white rounded-lg hover:bg-medical-700 transition"
+                                        className="btn-primary"
                                     >
                                         Update Password
                                     </button>

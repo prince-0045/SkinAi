@@ -4,23 +4,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, X, AlertCircle, FileText, CheckCircle, ShieldAlert, ThumbsUp, ThumbsDown, Info } from 'lucide-react';
 import ScanningLoader from '../components/animations/ScanningLoader';
 import { useAuth } from '../context/AuthContext';
-import DoctorFinder from '../components/DoctorFinder';
 import { downloadMedicalReport } from '../utils/pdfGenerator';
 
 const SEVERITY_CONFIG = {
-    Low:      { bg: 'bg-green-100',  text: 'text-green-800',  border: 'border-green-400',  dot: 'bg-green-500'  },
-    Moderate: { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-400', dot: 'bg-yellow-500' },
-    High:     { bg: 'bg-orange-100', text: 'text-orange-800', border: 'border-orange-400', dot: 'bg-orange-500' },
-    Critical: { bg: 'bg-red-100',    text: 'text-red-800',    border: 'border-red-500',    dot: 'bg-red-600'    },
-    Unknown:  { bg: 'bg-gray-100',   text: 'text-gray-700',   border: 'border-gray-400',   dot: 'bg-gray-400'   },
+    Low: { bg: 'bg-[#1a3a6e]/40', text: 'text-[var(--blue-soft)]', border: 'border-[var(--blue-mid)]', dot: 'bg-[var(--blue-bright)]' },
+    Moderate: { bg: 'bg-[#1a3a6e]/60', text: 'text-[var(--white-soft)]', border: 'border-[var(--blue-mid)]', dot: 'bg-[var(--blue-bright)]' },
+    High: { bg: 'bg-[#1a3a6e]/80', text: 'text-white', border: 'border-[#60a5e8]', dot: 'bg-white' },
+    Critical: { bg: 'bg-[#378ADD]/30', text: 'text-white', border: 'border-white', dot: 'bg-white' },
+    Unknown: { bg: 'bg-white/5', text: 'text-[var(--white-muted)]', border: 'border-[var(--white-faint)]', dot: 'bg-[var(--white-faint)]' },
 };
 
 export default function Detect() {
-    const [file, setFile]           = useState(null);
-    const [preview, setPreview]     = useState(null);
+    const [file, setFile] = useState(null);
+    const [preview, setPreview] = useState(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
-    const [result, setResult]       = useState(null);
-    const [error, setError]         = useState(null);
+    const [result, setResult] = useState(null);
+    const [error, setError] = useState(null);
     const [uploadLimit, setUploadLimit] = useState(null);
 
     useEffect(() => {
@@ -118,13 +117,13 @@ export default function Detect() {
             if (response.ok) {
                 const data = await response.json();
                 setResult({
-                    disease:        data.disease_detected,
-                    confidence:     (data.confidence_score * 100).toFixed(1),
-                    severity:       data.severity_level,
-                    description:    data.description  || 'AI analysis complete based on the uploaded image.',
+                    disease: data.disease_detected,
+                    confidence: (data.confidence_score * 100).toFixed(1),
+                    severity: data.severity_level,
+                    description: data.description || 'AI analysis complete based on the uploaded image.',
                     recommendation: data.recommendation || 'Please consult a dermatologist for a professional diagnosis.',
-                    doList:         data.do_list   || [],
-                    dontList:       data.dont_list || [],
+                    doList: data.do_list || [],
+                    dontList: data.dont_list || [],
                 });
             } else {
                 const errorData = await response.json().catch(() => null);
@@ -145,32 +144,31 @@ export default function Detect() {
     const sevCfg = result ? (SEVERITY_CONFIG[result.severity] || SEVERITY_CONFIG.Unknown) : null;
 
     return (
-        <div className="bg-[#0d1117] bg-navy-mesh min-h-screen transition-colors duration-300 pt-20 pb-12">
-            <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="bg-base min-h-screen transition-colors duration-300 pt-20 pb-12">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 page-enter">
                 <div className="text-center mb-10">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">AI Skin Disease Detection</h1>
-                    <p className="mt-2 text-gray-600 dark:text-gray-400">Upload a clear photo of the affected area for instant analysis.</p>
+                    <h1 className="page-title text-3xl">AI Skin Disease Detection</h1>
+                    <p className="page-subtitle mt-2">Upload a clear photo of the affected area for instant analysis.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* ── Upload Area ── */}
-                    <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 transition-colors duration-300">
+                    <div className="card p-6">
                         {!preview ? (
                             <div
                                 {...getRootProps()}
-                                className={`border-2 border-dashed rounded-xl h-80 flex flex-col items-center justify-center cursor-pointer transition-colors
-                                    ${isDragActive ? 'border-medical-500 bg-medical-50' : 'border-gray-300 hover:border-medical-400'}`}
+                                className={`upload-dropzone h-80 flex flex-col items-center justify-center cursor-pointer ${isDragActive ? 'dragging' : ''}`}
                             >
                                 <input {...getInputProps()} />
-                                <div className="w-16 h-16 bg-medical-50 rounded-full flex items-center justify-center mb-4 text-medical-600">
+                                <div className="upload-icon-circle mb-4">
                                     <Upload className="w-8 h-8" />
                                 </div>
-                                <p className="text-lg font-medium text-gray-900 dark:text-gray-200">Click to upload or drag &amp; drop</p>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">SVG, PNG, JPG or GIF (max. 5MB)</p>
+                                <p className="text-lg font-medium text-white" style={{ fontFamily: 'var(--font-display)' }}>Click to upload or drag &amp; drop</p>
+                                <p className="text-sm text-[var(--white-muted)] mt-1">SVG, PNG, JPG or GIF (max. 5MB)</p>
                                 {uploadLimit && (
-                                    <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-100 dark:border-blue-800/50">
-                                        <Info className="w-4 h-4" />
-                                        <span>{uploadLimit.remaining} of {uploadLimit.limit} daily uploads remaining (resets in 24h)</span>
+                                    <div className="mt-4 badge-moderate inline-flex items-center gap-2">
+                                        <Info className="w-3.5 h-3.5" />
+                                        <span>{uploadLimit.remaining} of {uploadLimit.limit} daily uploads (resets 24h)</span>
                                     </div>
                                 )}
                             </div>
@@ -194,11 +192,11 @@ export default function Detect() {
                         )}
 
                         {error && (
-                            <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-start gap-3">
-                                <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                            <div className="mt-4 p-4 bg-[var(--blue-dim)] border border-[var(--border-subtle)] rounded-xl flex items-start gap-3">
+                                <AlertCircle className="w-5 h-5 text-[var(--blue-bright)] flex-shrink-0 mt-0.5" />
                                 <div>
-                                    <h3 className="text-sm font-semibold text-red-900 dark:text-red-300">Upload Limit Reached</h3>
-                                    <p className="text-sm text-red-700 dark:text-red-200 mt-1">{error}</p>
+                                    <h3 className="text-sm font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>Upload Notice</h3>
+                                    <p className="text-sm text-[var(--white-muted)] mt-1">{error}</p>
                                 </div>
                             </div>
                         )}
@@ -206,7 +204,7 @@ export default function Detect() {
                         {preview && !isAnalyzing && !result && (
                             <button
                                 onClick={handleAnalyze}
-                                className="w-full mt-4 py-3 bg-medical-600 text-white rounded-lg font-medium hover:bg-medical-700 transition shadow-lg shadow-medical-500/30"
+                                className="btn-primary w-full mt-5 py-3.5 text-base"
                             >
                                 Analyze Image
                             </button>
@@ -222,67 +220,67 @@ export default function Detect() {
                                     <motion.div
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className={`bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border-t-4 ${sevCfg.border}`}
+                                        className="result-card p-6"
                                     >
                                         {/* Header */}
                                         <div className="flex items-center justify-between mb-4">
-                                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Analysis Result</h2>
-                                            <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold flex items-center gap-1">
-                                                <CheckCircle className="w-4 h-4" /> Complete
+                                            <h2 className="text-xl font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>Analysis Result</h2>
+                                            <span className="badge-positive w-max flex items-center gap-1">
+                                                <CheckCircle className="w-3.5 h-3.5" /> Complete
                                             </span>
                                         </div>
 
                                         {/* Disease + Confidence */}
-                                        <div className="mb-5">
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Detected Condition</p>
-                                            <div className="text-2xl font-bold text-medical-700 dark:text-medical-400">{result.disease}</div>
+                                        <div className="mb-6">
+                                            <p className="text-xs text-[var(--white-faint)] uppercase tracking-wide mb-1 font-bold">Detected Condition</p>
+                                            <div className="detected-condition-name">{result.disease}</div>
 
                                             {/* Severity badge */}
-                                            <span className={`inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full text-xs font-semibold ${sevCfg.bg} ${sevCfg.text}`}>
-                                                <span className={`w-2 h-2 rounded-full ${sevCfg.dot}`}></span>
+                                            <span className={`inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full text-xs font-semibold border ${sevCfg.bg} ${sevCfg.text} ${sevCfg.border}`}>
+                                                <span className={`w-2 h-2 rounded-full shadow-sm ${sevCfg.dot}`}></span>
                                                 {result.severity} Severity
                                             </span>
 
                                             {/* Confidence bar */}
-                                            <div className="mt-3">
-                                                <div className="w-full bg-gray-200 dark:bg-slate-600 rounded-full h-2.5">
+                                            <div className="mt-4">
+                                                <div className="confidence-bar-track">
                                                     <div
-                                                        className="bg-medical-600 h-2.5 rounded-full transition-all duration-1000"
+                                                        className="confidence-bar-fill"
                                                         style={{ width: `${result.confidence}%` }}
                                                     />
                                                 </div>
-                                                <div className="flex justify-between mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                                    <span>Confidence Score</span>
-                                                    <span className="font-bold">{result.confidence}%</span>
+                                                <div className="flex justify-between mt-1.5 text-xs text-[var(--white-muted)]">
+                                                    <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600 }}>Confidence Score</span>
+                                                    <span className="confidence-value">{result.confidence}%</span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Description */}
-                                        <div className="p-4 bg-medical-50 dark:bg-medical-900/20 rounded-xl border border-medical-100 dark:border-medical-800 mb-4">
-                                            <h3 className="font-semibold text-medical-900 dark:text-medical-300 flex items-center gap-2 mb-2">
+                                        <div className="info-box mb-4">
+                                            <h3 className="info-box-title flex items-center gap-2 mb-2">
                                                 <Info className="w-4 h-4" /> About This Condition
                                             </h3>
-                                            <p className="text-sm text-medical-800 dark:text-medical-200 leading-relaxed">{result.description}</p>
+                                            <p className="text-sm text-[var(--white-muted)] leading-relaxed">{result.description}</p>
                                         </div>
 
                                         {/* Recommendation */}
-                                        <div className={`p-4 rounded-xl border ${result.severity === 'Critical' ? 'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800' : 'bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800'}`}>
-                                            <h3 className={`font-semibold flex items-center gap-2 mb-1 text-sm ${result.severity === 'Critical' ? 'text-red-900 dark:text-red-300' : 'text-yellow-900 dark:text-yellow-300'}`}>
+                                        <div className="info-box">
+                                            <h3 className="info-box-title flex items-center gap-2 mb-2">
                                                 <AlertCircle className="w-4 h-4" /> Doctor's Advice
                                             </h3>
-                                            <p className={`text-sm ${result.severity === 'Critical' ? 'text-red-800 dark:text-red-200 font-semibold' : 'text-yellow-800 dark:text-yellow-200'}`}>
+                                            <p className="text-sm text-[var(--white-full)] font-medium leading-relaxed">
                                                 {result.recommendation}
                                             </p>
                                         </div>
 
                                         {/* Save button */}
-                                        <div className="mt-5 pt-4 border-t border-gray-100 dark:border-slate-700 text-center">
-                                            <button 
+                                        <div className="mt-5 pt-4 border-t border-[var(--border-subtle)] text-center">
+                                            <button
                                                 onClick={handleDownloadPDF}
-                                                className="text-medical-600 font-medium text-sm hover:underline flex items-center justify-center mx-auto gap-1"
+                                                className="view-directions-link mx-auto text-sm"
                                             >
-                                                <FileText className="w-4 h-4" /> Save to Health Record
+                                                <FileText className="w-4 h-4 mr-1" /> Save to Health Record
                                             </button>
                                         </div>
                                     </motion.div>
@@ -297,15 +295,15 @@ export default function Detect() {
                                         >
                                             {/* What To Do */}
                                             {result.doList.length > 0 && (
-                                                <div className="bg-white dark:bg-slate-800 rounded-2xl border border-green-200 dark:border-green-900 shadow-sm overflow-hidden">
-                                                    <div className="bg-green-500 px-4 py-3 flex items-center gap-2">
-                                                        <ThumbsUp className="w-4 h-4 text-white" />
-                                                        <h3 className="text-sm font-bold text-white">What To Do</h3>
+                                                <div className="action-card">
+                                                    <div className="flex items-center gap-2 mb-3">
+                                                        <ThumbsUp className="w-4 h-4 text-[var(--blue-bright)]" />
+                                                        <h3 className="action-card-title">What To Do</h3>
                                                     </div>
-                                                    <ul className="p-4 space-y-2">
+                                                    <ul className="space-y-2">
                                                         {result.doList.map((item, i) => (
-                                                            <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                                                                <span className="mt-0.5 flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center font-bold text-xs">{i + 1}</span>
+                                                            <li key={i} className="flex items-start gap-2">
+                                                                <span className="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full bg-[var(--blue-dim)] text-[var(--blue-bright)] flex items-center justify-center font-bold text-[10px]">{i + 1}</span>
                                                                 <span>{item}</span>
                                                             </li>
                                                         ))}
@@ -315,15 +313,15 @@ export default function Detect() {
 
                                             {/* What NOT To Do */}
                                             {result.dontList.length > 0 && (
-                                                <div className="bg-white dark:bg-slate-800 rounded-2xl border border-red-200 dark:border-red-900 shadow-sm overflow-hidden">
-                                                    <div className="bg-red-500 px-4 py-3 flex items-center gap-2">
-                                                        <ThumbsDown className="w-4 h-4 text-white" />
-                                                        <h3 className="text-sm font-bold text-white">What NOT To Do</h3>
+                                                <div className="action-card">
+                                                    <div className="flex items-center gap-2 mb-3">
+                                                        <ThumbsDown className="w-4 h-4 text-[var(--blue-bright)]" />
+                                                        <h3 className="action-card-title">What NOT To Do</h3>
                                                     </div>
-                                                    <ul className="p-4 space-y-2">
+                                                    <ul className="space-y-2">
                                                         {result.dontList.map((item, i) => (
-                                                            <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                                                                <span className="mt-0.5 flex-shrink-0 w-5 h-5 bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center font-bold text-xs">{i + 1}</span>
+                                                            <li key={i} className="flex items-start gap-2">
+                                                                <span className="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full bg-[var(--blue-dim)] text-[var(--blue-bright)] flex items-center justify-center font-bold text-[10px]">{i + 1}</span>
                                                                 <span>{item}</span>
                                                             </li>
                                                         ))}
@@ -333,22 +331,14 @@ export default function Detect() {
                                         </motion.div>
                                     )}
 
-                                    {/* ── Doctor Finder ── */}
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.3 }}
-                                    >
-                                        <DoctorFinder />
-                                    </motion.div>
                                 </>
                             ) : (
-                                <div className="h-full flex flex-col items-center justify-center p-8 text-center text-gray-400 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 border-dashed">
-                                    <div className="w-16 h-16 bg-gray-50 dark:bg-slate-700 rounded-full flex items-center justify-center mb-4">
-                                        <FileText className="w-8 h-8 text-gray-300 dark:text-gray-500" />
+                                <div className="h-full flex flex-col items-center justify-center p-8 text-center border-2 border-dashed border-[var(--border-subtle)] rounded-2xl bg-[var(--bg-surface)]">
+                                    <div className="w-16 h-16 bg-[var(--blue-dim)] rounded-full flex items-center justify-center mb-4">
+                                        <FileText className="w-8 h-8 text-[var(--blue-bright)]" />
                                     </div>
-                                    <h3 className="text-lg font-medium text-gray-900 dark:text-white">No Analysis Yet</h3>
-                                    <p className="max-w-xs mx-auto mt-2 text-gray-500 dark:text-gray-400">
+                                    <h3 className="text-lg font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>No Analysis Yet</h3>
+                                    <p className="max-w-xs mx-auto mt-2 text-[var(--white-muted)] text-sm">
                                         Upload an image to see the AI detection results and personalised do/don't recommendations here.
                                     </p>
                                 </div>
