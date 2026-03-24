@@ -1,24 +1,21 @@
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
+import boto3
+from botocore.exceptions import ClientError
 from app.core.config import settings
 from pydantic import EmailStr
 import logging
 
 logger = logging.getLogger(__name__)
 
-# --- SMTP Configuration (Using Gmail) ---
-conf = ConnectionConfig(
-    MAIL_USERNAME=settings.MAIL_USERNAME,
-    MAIL_PASSWORD=settings.MAIL_PASSWORD,
-    MAIL_FROM=settings.MAIL_FROM,
-    MAIL_PORT=settings.MAIL_PORT,
-    MAIL_SERVER=settings.MAIL_SERVER,
-    MAIL_STARTTLS=settings.MAIL_STARTTLS,
-    MAIL_SSL_TLS=settings.MAIL_SSL_TLS,
-    USE_CREDENTIALS=True,
-    VALIDATE_CERTS=False
+# --- AWS SES SDK Logic (Bypasses VPS Port Blocking) ---
+ses_client = boto3.client(
+    'ses',
+    region_name=settings.AWS_REGION,
+    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
 )
 
 async def send_otp_email(email: EmailStr, otp: str):
+    logger.info(f"Attempting to send OTP email via AWS SES to {email}")
     html = f"""
     <html>
         <body>
@@ -32,19 +29,23 @@ async def send_otp_email(email: EmailStr, otp: str):
     </html>
     """
 
-    message = MessageSchema(
-        subject="DermAura - Verification Code",
-        recipients=[email],
-        body=html,
-        subtype=MessageType.html,
-    )
-
     try:
-        fm = FastMail(conf)
-        await fm.send_message(message)
-        logger.info(f"OTP email sent successfully to {email}")
+        response = ses_client.send_email(
+            Source=f"DermAura <{settings.MAIL_FROM}>",
+            Destination={'ToAddresses': [email]},
+            Message={
+                'Subject': {'Data': 'DermAura - Verification Code'},
+                'Body': {
+                    'Html': {'Data': html}
+                }
+            }
+        )
+        logger.info(f"SUCCESS: Email sent via SES. Message ID: {response['MessageId']}")
+    except ClientError as e:
+        logger.error(f"SES ERROR: {e.response['Error']['Message']}")
+        raise e
     except Exception as e:
-        logger.error(f"Failed to send OTP email: {e}")
+        logger.error(f"General Error sending email: {e}")
         raise e
 
 async def send_welcome_email(email: EmailStr, name: str):
@@ -60,16 +61,17 @@ async def send_welcome_email(email: EmailStr, name: str):
     </html>
     """
     
-    message = MessageSchema(
-        subject="Welcome to DermAura", 
-        recipients=[email], 
-        body=html, 
-        subtype=MessageType.html
-    )
-    
     try:
-        fm = FastMail(conf)
-        await fm.send_message(message)
-        logger.info(f"Welcome email sent successfully to {email}")
+        ses_client.send_email(
+            Source=f"DermAura <{settings.MAIL_FROM}>",
+            Destination={'ToAddresses': [email]},
+            Message={
+                'Subject': {'Data': 'Welcome to DermAura'},
+                'Body': {
+                    'Html': {'Data': html}
+                }
+            }
+        )
+        logger.info("SUCCESS: Welcome email sent via SES")
     except Exception as e:
-        logger.error(f"Failed to send welcome email: {e}")
+        logger.error(f"Error sending welcome email via SES: {e}")
