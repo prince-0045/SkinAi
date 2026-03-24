@@ -63,6 +63,7 @@ function App() {
             <Route path="/track" element={<ProtectedRoute><Tracker /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/doctors" element={<ProtectedRoute><Doctors /></ProtectedRoute>} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </main>
         <Footer />
