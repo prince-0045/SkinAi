@@ -12,10 +12,22 @@ async def verify_admin(x_admin_password: Optional[str] = Header(None)):
         raise HTTPException(status_code=401, detail="Unauthorized: Invalid Admin Password")
     return True
 
+from datetime import datetime, timedelta
+
 @router.get("/stats", dependencies=[Depends(verify_admin)])
 async def get_admin_stats():
+    from app.models.domain import ActiveSession
+    
     # Count total users
     total_users = await db.engine.count(User)
+    
+    # Count active users (last 24h)
+    twenty_four_hours_ago = datetime.utcnow() - timedelta(hours=24)
+    active_users_24h = await db.engine.count(User, User.last_login >= twenty_four_hours_ago)
+    
+    # Count live users (last 2 minutes)
+    two_minutes_ago = datetime.utcnow() - timedelta(minutes=2)
+    live_users = await db.engine.count(ActiveSession, ActiveSession.last_seen_at >= two_minutes_ago)
     
     # Count total scans
     total_scans = await db.engine.count(SkinScan)
@@ -28,6 +40,8 @@ async def get_admin_stats():
     
     return {
         "total_users": total_users,
+        "active_users_24h": active_users_24h,
+        "live_users": live_users,
         "total_scans": total_scans,
         "recent_users": [
             {

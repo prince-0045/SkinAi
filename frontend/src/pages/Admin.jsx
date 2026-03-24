@@ -106,6 +106,35 @@ const Admin = () => {
                 <h2 className="text-3xl font-bold text-gray-900">{stats.total_users}</h2>
               </div>
             </div>
+
+            <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 flex items-center gap-5">
+              <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600">
+                <Activity size={28} />
+              </div>
+              <div>
+                <p className="text-gray-500 font-medium text-sm">Active (Last 24h)</p>
+                <h2 className="text-3xl font-bold text-gray-900">{stats.active_users_24h}</h2>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 flex items-center gap-5 relative overflow-hidden">
+              <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
+                <div className="relative">
+                  <Activity size={28} />
+                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                  </span>
+                </div>
+              </div>
+              <div>
+                <p className="text-gray-500 font-medium text-sm">Live Now</p>
+                <h2 className="text-3xl font-bold text-gray-900">{stats.live_users}</h2>
+              </div>
+              <div className="absolute top-0 right-0 p-2">
+                 <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded-full">Real-time</span>
+              </div>
+            </div>
             
             <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 flex items-center gap-5">
               <div className="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center text-green-600">

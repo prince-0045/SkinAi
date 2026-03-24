@@ -40,6 +40,32 @@ export const AuthProvider = ({ children }) => {
 
     const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
+    // Real-time Heartbeat (Pulse)
+    useEffect(() => {
+        let interval;
+        if (user && !loading) {
+            const sendPulse = async () => {
+                try {
+                    const token = localStorage.getItem('token');
+                    if (!token) return;
+                    
+                    await fetch(`${API_BASE_URL}/api/v1/users/pulse`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                } catch (err) {
+                    // Silently ignore heartbeat failures
+                }
+            };
+
+            sendPulse(); // Initial pulse
+            interval = setInterval(sendPulse, 60000); // Every 60 seconds
+        }
+        return () => clearInterval(interval);
+    }, [user, loading, API_BASE_URL]);
+
     const login = async (email, password) => {
         try {
             const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {

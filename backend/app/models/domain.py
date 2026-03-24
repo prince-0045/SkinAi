@@ -20,6 +20,14 @@ class SkinScan(Model):
 
 
 
+class ActiveSession(Model):
+    user_id: str
+    last_seen_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    model_config = {
+        "collection": "active_sessions"
+    }
+
 class OTPLog(Model):
     email: str
     otp: str

@@ -13,6 +13,27 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
+@router.post("/pulse")
+async def user_pulse(
+    current_user: User = Depends(get_current_user),
+    db: AIOEngine = Depends(get_db)
+):
+    """Update the user's active session timestamp (heartbeat)."""
+    from app.models.domain import ActiveSession
+    from datetime import datetime
+    
+    # Update or create active session
+    session = await db.find_one(ActiveSession, ActiveSession.user_id == str(current_user.id))
+    if session:
+        session.last_seen_at = datetime.utcnow()
+        await db.save(session)
+    else:
+        new_session = ActiveSession(user_id=str(current_user.id))
+        await db.save(new_session)
+    
+    return {"status": "ok"}
+
+
 def validate_password(password: str):
     """Enforce password strength requirements."""
     if len(password) < PASSWORD_MIN_LENGTH:
