@@ -59,7 +59,7 @@ export default function Signup() {
             setLoading(false);
 
             if (res.success) {
-                navigate('/otp', { state: { email, type: 'signup' } });
+                navigate('/detect');
             } else {
                 console.warn("Signup Rejected:", res.error);
                 if (res.error === "Email already registered") {

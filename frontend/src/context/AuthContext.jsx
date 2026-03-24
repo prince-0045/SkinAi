@@ -110,8 +110,13 @@ export const AuthProvider = ({ children }) => {
 
             try {
                 const data = await response.json();
-                // Returns { message: "...", otp_debug: "..." } (if supported)
-                return { success: true, otpDebug: data.otp_debug };
+                // If the backend returns a token immediately (Direct Login)
+                if (data.access_token) {
+                    localStorage.setItem('token', data.access_token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    setUser(data.user);
+                }
+                return { success: true, user: data.user };
             } catch (parseError) {
                 throw new Error('Invalid response from server');
             }

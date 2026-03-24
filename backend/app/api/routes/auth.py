@@ -83,40 +83,28 @@ async def signup(
         logger.error(f"Password hashing failed: {e}")
         raise HTTPException(status_code=500, detail="Account creation failed. Please try again.")
 
-    # Generate OTP
-    otp = generate_otp()
-    otp_log = OTPLog(
-        email=email, otp=otp, expires_at=datetime.utcnow() + timedelta(minutes=OTP_EXPIRY_MINUTES)
-    )
-    await db.save(otp_log)
-
-    # Send OTP email
-    email_sent = False
-    import asyncio
-
-    try:
-        await asyncio.wait_for(send_otp_email(email, otp), timeout=15.0)
-        email_sent = True
-    except Exception as e:
-        logger.warning(f"OTP email failed for {email}: {e}")
-
     # Create user
     new_user = User(
         name=name,
         email=email,
         hashed_password=hashed_password,
-        is_verified=False,
+        is_verified=True,  # Default to verified
         auth_provider="email",
     )
     await db.save(new_user)
 
-    response = {"message": "User created. Please verify your email."}
-    if not email_sent:
-        # Never expose OTP in response — log server-side only
-        logger.warning(f"OTP delivery failed for {email}, OTP: {otp}")
-        response["message"] = "User created. Email delivery may be delayed — please check your inbox or try again."
+    # Generate token immediately for professional "direct login" experience
+    access_token = create_access_token(data={"sub": new_user.email})
 
-    return response
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": {
+            "name": new_user.name,
+            "email": new_user.email,
+            "created_at": new_user.created_at.isoformat() if new_user.created_at else None,
+        },
+    }
 
 
 @router.post("/login")
@@ -150,11 +138,6 @@ async def login(
         _login_attempts[email].append(now)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
-        )
-
-    if not user.is_verified:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Email not verified"
         )
 
     # Clear failed attempts on success

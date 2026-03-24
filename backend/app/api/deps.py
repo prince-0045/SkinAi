@@ -28,10 +28,10 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AIOEngine = 
     if user is None:
         raise credentials_exception
         
-    if not user.is_verified:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Email not verified"
-        )
+    # if not user.is_verified:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail="Email not verified"
+    #     )
         
     return user
