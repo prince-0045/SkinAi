@@ -222,15 +222,8 @@ async def google_login(
                 await send_welcome_email(user.email, user.name)
             except Exception as e:
                 logger.warning(f"Welcome email failed: {e}")
-        else:
-            # Always mark as verified if coming from Google
-            if not user.is_verified:
-                user.is_verified = True
-                await db.save(user)
-            
-            if user.auth_provider != "google":
-                # Optionally link account to Google or keep original
-                pass
+        elif user.auth_provider != "google":
+            pass  # Allow cross-provider login
 
         access_token = create_access_token(data={"sub": user.email})
 
