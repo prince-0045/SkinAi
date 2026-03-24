@@ -13,7 +13,7 @@ export default function Navbar() {
 
     // Dynamic styles for active navigation items
     const navClass = (path) => `nav-link ${location.pathname === path ? 'active' : ''}`;
-    const mobClass = (path) => `block px-3 py-2 rounded-md text-base font-medium transition-colors ${location.pathname === path ? 'text-[var(--blue-bright)] bg-[var(--blue-dim)]' : 'text-[var(--white-muted)] hover:text-white hover:bg-[var(--bg-card)]'}`;
+    const mobClass = (path) => `block px-3 py-2 rounded-md text-base font-medium transition-colors ${location.pathname === path ? 'text-[var(--blue-bright)] bg-[var(--blue-dim)]' : 'text-[var(--white-muted)] hover:text-[var(--white-full)] hover:bg-[var(--bg-card)]'}`;
 
     const handleLogout = () => {
         logout();
@@ -51,7 +51,7 @@ export default function Navbar() {
                         {user ? (
                             <div className="flex items-center space-x-4">
                                 <Link to="/profile" className="p-2 rounded-full hover:bg-[var(--blue-dim)] transition-colors">
-                                    <User className="h-5 w-5 text-white" />
+                                    <User className="h-5 w-5 text-[var(--blue-bright)]" />
                                 </Link>
                                 <button
                                     onClick={handleLogout}
@@ -76,7 +76,7 @@ export default function Navbar() {
                     <div className="md:hidden">
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className="p-2 rounded-md text-white hover:bg-[var(--blue-dim)]"
+                            className="p-2 rounded-md text-[var(--blue-bright)] hover:bg-[var(--blue-dim)]"
                         >
                             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                         </button>

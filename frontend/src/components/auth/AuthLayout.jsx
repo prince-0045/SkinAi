@@ -6,9 +6,9 @@ import DNAHelix from '../animations/DNAHelix';
 
 export default function AuthLayout({ children, title, subtitle }) {
     return (
-        <div className="bg-[#0d1117] bg-navy-mesh min-h-screen flex transition-colors duration-300">
+        <div className="bg-[var(--bg-base)] min-h-screen flex transition-colors duration-300">
             {/* Left Side - Form */}
-            <div className="bg-[#0d1117] bg-navy-mesh w-full lg:w-1/2 flex flex-col justify-center px-4 sm:px-12 md:px-24 relative">
+            <div className="bg-[var(--bg-base)] w-full lg:w-1/2 flex flex-col justify-center px-4 sm:px-12 md:px-24 relative">
 
                 <motion.div
                     className="relative z-10 pt-32 lg:pt-24"
@@ -21,8 +21,8 @@ export default function AuthLayout({ children, title, subtitle }) {
                             <ShieldCheck className="w-4 h-4 mr-2" />
                             Secure Medical Login
                         </div>
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{title}</h2>
-                        <p className="mt-2 text-gray-600 dark:text-gray-400">{subtitle}</p>
+                        <h2 className="text-3xl font-bold text-[var(--white-full)]">{title}</h2>
+                        <p className="mt-2 text-[var(--white-muted)]">{subtitle}</p>
                     </div>
 
                     {children}
@@ -30,8 +30,8 @@ export default function AuthLayout({ children, title, subtitle }) {
             </div>
 
             {/* Right Side - Visual */}
-            <div className="bg-[#0d1117] bg-navy-mesh hidden lg:flex w-1/2 relative overflow-hidden items-center justify-center p-12">
-                <div className="absolute inset-0 bg-gradient-to-br from-medical-900/40 to-slate-950 opacity-100"></div>
+            <div className="bg-[var(--bg-surface)] hidden lg:flex w-1/2 relative overflow-hidden items-center justify-center p-12">
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/40 to-[var(--bg-base)] opacity-100"></div>
                 {/* Decorative DNA */}
                 <div className="absolute inset-0 opacity-20 transform scale-150 rotate-45 pointer-events-none">
                     <DNAHelix className="w-full h-full text-white" />

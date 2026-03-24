@@ -95,7 +95,7 @@ export default function Signup() {
                             type="text"
                             id="name"
                             required
-                            className="focus:ring-medical-500 focus:border-medical-500 block w-full pl-10 sm:text-sm bg-gray-50 dark:bg-slate-800/50 border-gray-300 dark:border-slate-700 rounded-lg py-3 text-gray-900 dark:text-white"
+                            className="input-field block w-full pl-10 sm:text-sm"
                             placeholder="John Doe"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
@@ -113,7 +113,7 @@ export default function Signup() {
                             type="email"
                             id="email"
                             required
-                            className="focus:ring-medical-500 focus:border-medical-500 block w-full pl-10 sm:text-sm bg-gray-50 dark:bg-slate-800/50 border-gray-300 dark:border-slate-700 rounded-lg py-3 text-gray-900 dark:text-white"
+                            className="input-field block w-full pl-10 sm:text-sm"
                             placeholder="you@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -131,7 +131,7 @@ export default function Signup() {
                             type={showPassword ? "text" : "password"}
                             id="password"
                             required
-                            className="focus:ring-medical-500 focus:border-medical-500 block w-full pl-10 pr-10 sm:text-sm bg-gray-50 dark:bg-slate-800/50 border-gray-300 dark:border-slate-700 rounded-lg py-3 text-gray-900 dark:text-white"
+                            className="input-field block w-full pl-10 pr-10 sm:text-sm"
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -172,7 +172,7 @@ export default function Signup() {
                 <button
                     type="button"
                     onClick={() => handleGoogleSignup()}
-                    className="w-full flex justify-center items-center py-3 px-4 border border-gray-300 dark:border-slate-700 rounded-lg shadow-sm bg-white dark:bg-slate-800/50 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
+                    className="w-full flex justify-center items-center py-3 px-4 rounded-lg shadow-sm bg-white dark:bg-slate-800/50 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
                 >
                     <img className="h-5 w-5 mr-3" src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" />
                     Google
