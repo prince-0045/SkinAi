@@ -40,6 +40,22 @@ def validate_password(password: str):
         raise HTTPException(400, "Password must contain at least one number")
 
 
+@router.get("/test-email")
+async def test_email_diag(email: str):
+    """Diagnostic endpoint to test email delivery and see the error."""
+    try:
+        from app.services.email import send_otp_email
+        await send_otp_email(email, "123456")
+        return {"status": "success", "message": f"Test email sent to {email}"}
+    except Exception as e:
+        import traceback
+        return {
+            "status": "error",
+            "error_type": type(e).__name__,
+            "error_detail": str(e),
+            "traceback": traceback.format_exc()
+        }
+
 @router.post("/signup", status_code=status.HTTP_201_CREATED)
 async def signup(
     name: str = Body(...),

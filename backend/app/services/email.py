@@ -40,13 +40,14 @@ async def send_otp_email(email: EmailStr, otp: str):
 
     fm = FastMail(conf)
     try:
-        print(f"DEBUG: Connection Config: {conf.MAIL_SERVER}:{conf.MAIL_PORT}, User={conf.MAIL_USERNAME}")
+        print(f"DEBUG: Connection Config: {conf.MAIL_SERVER}:{conf.MAIL_PORT}, User={conf.MAIL_USERNAME}, SSL={conf.MAIL_SSL_TLS}")
         await fm.send_message(message)
-        print("Email sent successfully")
+        print("SUCCESS: Email sent successfully")
     except Exception as e:
-        print(f"Error sending email: {e}")
+        print(f"CRITICAL ERROR sending email: {type(e).__name__} - {e}")
         import traceback
         traceback.print_exc()
+        # Keep raising to let the caller handle it
         raise e
 
 
