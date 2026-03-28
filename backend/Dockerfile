@@ -26,5 +26,5 @@ COPY . .
 # Expose the port FastAPI will run on
 EXPOSE 8000
 
-# Start the FastAPI application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start the FastAPI application with proxy headers trusted
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips=*"]
