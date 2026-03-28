@@ -4,6 +4,16 @@ from app.models.user import User
 from app.models.domain import SkinScan
 from app.core.config import settings
 from typing import Optional
+import math
+
+def safe_float(value, default=0.0):
+    """Return default if value is None, NaN, or Infinity."""
+    try:
+        if value is None or not math.isfinite(float(value)):
+            return default
+        return float(value)
+    except (TypeError, ValueError):
+        return default
 
 router = APIRouter()
 
@@ -52,8 +62,8 @@ async def get_admin_stats():
         ],
         "recent_scans": [
             {
-                "disease": s.disease_detected,
-                "confidence": s.confidence_score,
+                "disease": s.disease_detected or "Unknown",
+                "confidence": safe_float(s.confidence_score),
                 "created_at": s.created_at
             } for s in recent_scans
         ]
