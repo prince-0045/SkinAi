@@ -167,11 +167,7 @@ async def get_scan_history(
         }
         for scan in scans
     ]
-    response = JSONResponse(content=result)
-    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
-    return response
+    return result
 
 @router.get("/limit")
 async def get_upload_limit(

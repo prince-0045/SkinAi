@@ -51,26 +51,31 @@ async def log_response_time(request, call_next):
 
 from app.core.config import settings
 
-# CORS
+# CORS Configuration
+# Use regex to allow all subdomains of dermaura.tech and common local origins
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "http://localhost:8000",
-    "http://10.99.173.187:5173",
-    "http://10.125.164.187:5173",
+    "http://localhost:3000",
+    "https://dermaura.tech",
+    "https://www.dermaura.tech",
 ]
 
 if hasattr(settings, "FRONTEND_URL") and settings.FRONTEND_URL:
-    origins.append(settings.FRONTEND_URL)
-    if settings.FRONTEND_URL.endswith('/'):
-        origins.append(settings.FRONTEND_URL[:-1])
+    if settings.FRONTEND_URL not in origins:
+        origins.append(settings.FRONTEND_URL)
+    cleaned_url = settings.FRONTEND_URL.rstrip('/')
+    if cleaned_url not in origins:
+        origins.append(cleaned_url)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_origin_regex=r"https?://(.*\.)?dermaura\.tech", # Allow all dermaura.tech subdomains
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 from app.api.routes import admin
