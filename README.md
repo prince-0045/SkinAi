@@ -490,7 +490,7 @@ We welcome contributions! Please follow these steps:
 **Environment Configuration (.env)**
 Create a `.env` file in the `backend` directory with the following variables:
 ```env
-MONGODB_URL=mongodb://localhost:27017/skinai  # Or your MongoDB Atlas URL
+MONGODB_URL=your_mongodb_key  # Or your MongoDB Atlas URL
 SECRET_KEY=your_secret_key_here
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
