@@ -1,0 +1,25 @@
+{
+  "model_name": "EfficientNetV2S_skin",
+  "class_names": [
+    "Acne",
+    "Actinic_Keratosis",
+    "Benign_Growth",
+    "DrugEruption",
+    "Eczema",
+    "Fungal_Infection",
+    "Infestations_Bites",
+    "Psoriasis",
+    "Rosacea",
+    "SkinCancer",
+    "Unknown_Normal",
+    "Vitiligo",
+    "Warts"
+  ],
+  "image_size": 300,
+  "batch_size": 16,
+  "head_epochs": 15,
+  "fine_tune_epochs": 40,
+  "best_checkpoint": "/content/trained_artifacts_effnetv2s/best_effnetv2s.weights.h5",
+  "final_weights": "/content/trained_artifacts_effnetv2s/effnetv2s_final.weights.h5",
+  "validation_accuracy": 0.8069187449718423
+}

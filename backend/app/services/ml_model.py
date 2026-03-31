@@ -14,22 +14,29 @@ from app.core.constants import MIN_CONFIDENCE_THRESHOLD
 # Constants
 # ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-_H5_PATH = BASE_DIR / "model.weights.h5"
+_DEFAULT_H5_PATH = BASE_DIR / "model.weights.h5"
+_SERVICE_H5_PATH = Path(__file__).resolve().parent / "effnetv2s_final.weights.h5"
+_ALT_H5_PATH = BASE_DIR / "effnetv2s_kaggle_dataset" / "effnetv2s_final.weights.h5"
+
+# Prefer the locally-copied service weights first, then the original dataset path, then fallback.
+_H5_PATH = _SERVICE_H5_PATH if _SERVICE_H5_PATH.exists() else (_ALT_H5_PATH if _ALT_H5_PATH.exists() else _DEFAULT_H5_PATH)
 
 _PKL_PATH = None
-IMAGE_SIZE = 224
+IMAGE_SIZE = 300
 NUM_CLASSES = 13
 
 # 13 final class labels (pre-merged during training)
+# (EfficientNetV2S checkpoint from effnetv2s_metadata.json)
 CLASS_NAMES = [
     'Acne', 'Actinic_Keratosis', 'Benign_Growth', 'DrugEruption', 'Eczema',
     'Fungal_Infection', 'Infestations_Bites', 'Psoriasis', 'Rosacea',
-    'SkinCancer', 'Unknown', 'Vitiligo', 'Warts'
+    'SkinCancer', 'Unknown_Normal', 'Vitiligo', 'Warts'
 ]
 
-# ── No merging needed — classes are already merged at training time ──
-# Only map Unknown_Normal → Unknown if the model ever outputs it
-CLASS_MERGE_MAP = {}
+# Remap model outputs to UI categories
+CLASS_MERGE_MAP = {
+    'Unknown_Normal': 'Unknown'
+}
 
 # Sub-conditions shown in the UI for merged classes
 MERGED_CLASS_INCLUDES = {
@@ -261,7 +268,7 @@ DISEASE_INFO = {
         ]
     },
     "Unknown": {
-        "severity": "Unknown",
+        "severity": "N/A",
         "description": "The AI could not identify a skin condition from the uploaded image. This may be because the image is not of a skin condition, or due to image quality issues.",
         "recommendation": "Please upload a clearer, well-lit photo of the affected area, or consult a medical professional directly.",
         "do_list": [
@@ -284,10 +291,10 @@ HIGH_RISK_CLASSES = {'SkinCancer', 'Actinic_Keratosis'}
 _model = None
 
 def _get_model():
-    """Load the MobileNetV2 model lazily so the server starts fast."""
+    """Load the EfficientNetV2S model lazily so the server starts fast."""
     global _model
     if _model is None:
-        print(f"[ML] Rebuilding {NUM_CLASSES}-class MobileNetV2 model and loading weights from {_H5_PATH} ...")
+        print(f"[ML] Rebuilding {NUM_CLASSES}-class EfficientNetV2S model and loading weights from {_H5_PATH} ...")
         
         # 1. Patch for Windows DLL Application Control policy block
         import sys
@@ -307,17 +314,17 @@ def _get_model():
         import tensorflow as tf
         import keras
         
-        # 3. Rebuild MobileNetV2 architecture exactly as in training script
-        print("[ML] Constructing MobileNetV2 backbone...")
+            # 3. Rebuild EfficientNetV2S backbone exactly as training checkpoint expects
+        print("[ML] Constructing EfficientNetV2S backbone...")
         inputs = keras.Input(shape=(IMAGE_SIZE, IMAGE_SIZE, 3), name="image")
 
         # The preprocessing cast and lambda
         x = keras.layers.Lambda(lambda t: tf.cast(t, tf.float32))(inputs)
         x = keras.layers.Lambda(
-            keras.applications.mobilenet_v2.preprocess_input
+            keras.applications.efficientnet_v2.preprocess_input
         )(x)
 
-        base_model = keras.applications.MobileNetV2(
+        base_model = keras.applications.EfficientNetV2S(
             include_top=False,
             weights=None,
             input_shape=(IMAGE_SIZE, IMAGE_SIZE, 3),
@@ -329,7 +336,7 @@ def _get_model():
         x = keras.layers.BatchNormalization()(x)
         x = keras.layers.Dense(512, activation="relu")(x)
         x = keras.layers.Dropout(0.35)(x)
-        x = keras.layers.Dense(128, activation="relu")(x)
+        x = keras.layers.Dense(256, activation="relu")(x)
         x = keras.layers.Dropout(0.175)(x)
         outputs = keras.layers.Dense(NUM_CLASSES, activation="softmax")(x)
         
@@ -339,7 +346,7 @@ def _get_model():
         print("[ML] Loading weights...")
         _model.load_weights(str(_H5_PATH))
         
-        print(f"[ML] {NUM_CLASSES}-Class MobileNetV2 Model rebuilt and weights loaded successfully!")
+        print(f"[ML] {NUM_CLASSES}-Class EfficientNetV2S Model rebuilt and weights loaded successfully!")
     return _model
 
 

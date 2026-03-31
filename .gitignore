@@ -13,4 +13,5 @@ __pycache__/
 .frontend/dist
 .backend/.env
 skinai_images.tar
-
+*.h5
+*.weights.h5
